@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ricardo Guercioni — AI &amp; Automation Engineer</title>
+<meta name="description" content="Mechanical engineer building AI systems for construction, operations, and the apps in between. Miami, FL." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  /* ============================================================
+     DESIGN TOKENS  —  derived from gncaiconsulting.com identity
+     ============================================================ */
+  :root{
+    --ink:#0e1524;          /* page background (brand navy)        */
+    --panel:#0b1120;        /* darkest panel (brand)               */
+    --panel-2:#121b2e;      /* card surface                        */
+    --panel-3:#16213a;      /* card surface, raised                */
+    --amber:#c8923a;        /* the one accent (brand)              */
+    --amber-soft:#e0a94d;   /* accent hover                        */
+    --paper:#e9e7df;        /* primary text — warm drawing white   */
+    --muted:#8b93a6;        /* secondary text                      */
+    --line:#27324b;         /* hairline rule                       */
+    --line-soft:#1c2740;    /* fainter rule                        */
+    --grid:rgba(125,148,190,.045); /* blueprint grid               */
+    --maxw:1160px;
+    --gut:clamp(20px,5vw,64px);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--paper);
+    font-family:"Inter",system-ui,sans-serif;
+    font-size:17px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    /* faint engineering grid */
+    background-image:
+      linear-gradient(var(--grid) 1px,transparent 1px),
+      linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:38px 38px;
+  }
+  a{color:inherit;text-decoration:none;}
+  ::selection{background:var(--amber);color:var(--ink);}
+
+  .wrap{max-width:var(--maxw);margin:0 auto;padding-left:var(--gut);padding-right:var(--gut);}
+
+  /* mono utility label — the "spec callout" voice */
+  .mono{
+    font-family:"IBM Plex Mono",ui-monospace,monospace;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    font-size:12px;
+    color:var(--muted);
+  }
+  .eyebrow{
+    font-family:"IBM Plex Mono",monospace;
+    text-transform:uppercase;
+    letter-spacing:.22em;
+    font-size:12px;
+    color:var(--amber);
+    display:inline-flex;align-items:center;gap:10px;
+  }
+  .eyebrow::before{content:"";width:26px;height:1px;background:var(--amber);display:inline-block;}
+
+  /* ============================================================
+     TOP BAR
+     ============================================================ */
+  header.nav{
+    position:sticky;top:0;z-index:40;
+    backdrop-filter:blur(8px);
+    background:linear-gradient(to bottom,rgba(14,21,36,.92),rgba(14,21,36,.72));
+    border-bottom:1px solid var(--line-soft);
+  }
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .brand{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing:.06em;font-size:14px;}
+  .brand b{color:var(--amber);}
+  .nav-links{display:flex;gap:28px;}
+  .nav-links a{font-family:"IBM Plex Mono",monospace;font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);transition:color .2s;}
+  .nav-links a:hover{color:var(--paper);}
+  @media(max-width:680px){.nav-links{display:none;}}
+
+  /* ============================================================
+     HERO  —  drawing title block
+     ============================================================ */
+  .hero{position:relative;padding:clamp(64px,12vw,140px) 0 clamp(56px,9vw,104px);}
+  .sheet{
+    position:relative;
+    border:1px solid var(--line);
+    padding:clamp(28px,5vw,60px);
+    background:linear-gradient(160deg,rgba(18,27,46,.6),rgba(11,17,32,.3));
+  }
+  /* registration / corner marks */
+  .sheet::before,.sheet::after{
+    content:"";position:absolute;width:14px;height:14px;border:1.5px solid var(--amber);
+  }
+  .sheet::before{top:-1px;left:-1px;border-right:none;border-bottom:none;}
+  .sheet::after{bottom:-1px;right:-1px;border-left:none;border-top:none;}
+  .corner-tr,.corner-bl{position:absolute;width:14px;height:14px;border:1.5px solid var(--line);}
+  .corner-tr{top:-1px;right:-1px;border-left:none;border-bottom:none;}
+  .corner-bl{bottom:-1px;left:-1px;border-right:none;border-top:none;}
+
+  .hero h1{
+    font-weight:900;
+    font-size:clamp(44px,9vw,108px);
+    line-height:.94;
+    letter-spacing:-.03em;
+    margin:18px 0 0;
+  }
+  .hero h1 .ln{display:block;overflow:hidden;}
+  .hero h1 .ln span{display:block;}
+  .hero .lede{
+    max-width:46ch;margin:26px 0 0;font-size:clamp(17px,2.4vw,21px);color:var(--paper);
+  }
+  .hero .lede b{color:var(--amber);font-weight:600;}
+
+  /* spec strip */
+  .spec-strip{
+    margin-top:38px;display:grid;gap:0;border-top:1px solid var(--line-soft);
+    grid-template-columns:repeat(4,1fr);
+  }
+  .spec-strip div{padding:16px 18px 4px;border-right:1px solid var(--line-soft);}
+  .spec-strip div:last-child{border-right:none;}
+  .spec-strip .k{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--amber);}
+  .spec-strip .v{margin-top:6px;font-size:14px;color:var(--paper);line-height:1.4;}
+  @media(max-width:740px){
+    .spec-strip{grid-template-columns:1fr 1fr;}
+    .spec-strip div:nth-child(2){border-right:none;}
+    .spec-strip div:nth-child(1),.spec-strip div:nth-child(2){border-bottom:1px solid var(--line-soft);}
+  }
+
+  /* ============================================================
+     SECTION SCAFFOLD
+     ============================================================ */
+  section{padding:clamp(56px,9vw,104px) 0;}
+  .sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:20px;margin-bottom:42px;flex-wrap:wrap;}
+  .sec-head h2{font-size:clamp(26px,4vw,40px);font-weight:800;letter-spacing:-.02em;margin:12px 0 0;}
+  .sec-head .count{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);letter-spacing:.12em;}
+  .divider{height:1px;background:var(--line-soft);}
+
+  /* ============================================================
+     PROJECT SPEC CARDS
+     ============================================================ */
+  .grid{display:grid;gap:1px;background:var(--line-soft);border:1px solid var(--line-soft);}
+  .grid.three{grid-template-columns:repeat(3,1fr);}
+  @media(max-width:900px){.grid.three{grid-template-columns:1fr 1fr;}}
+  @media(max-width:680px){.grid.three{grid-template-columns:1fr;}}
+
+  .card{
+    position:relative;background:var(--panel-2);padding:30px 28px 26px;
+    display:flex;flex-direction:column;min-height:240px;
+    transition:background .25s,transform .25s;
+  }
+  .card:hover{background:var(--panel-3);}
+  .card .tag-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:auto;}
+  .card .sheet-no{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.14em;color:var(--muted);}
+  .status{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;display:inline-flex;align-items:center;gap:7px;color:var(--muted);}
+  .status::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--muted);}
+  .status.live::before,.status.shipped::before{background:var(--amber);box-shadow:0 0 0 3px rgba(200,146,58,.18);}
+  .status.build::before{background:#5b86c9;}
+  .card h3{font-size:clamp(22px,2.6vw,30px);font-weight:800;letter-spacing:-.02em;margin:28px 0 0;}
+  .card p{color:var(--muted);margin:12px 0 0;font-size:15.5px;line-height:1.55;}
+
+  .meta{margin-top:22px;border-top:1px solid var(--line-soft);padding-top:16px;display:grid;gap:8px;}
+  .meta .row{display:grid;grid-template-columns:64px 1fr;gap:14px;align-items:baseline;}
+  .meta .row .mk{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);}
+  .meta .row .mv{font-size:13.5px;color:var(--paper);}
+
+  .card .open{
+    margin-top:20px;align-self:flex-start;font-family:"IBM Plex Mono",monospace;
+    font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--paper);
+    border:1px solid var(--line);padding:9px 16px;cursor:pointer;background:transparent;
+    transition:border-color .2s,color .2s,background .2s;display:inline-flex;align-items:center;gap:8px;
+  }
+  .card .open:hover{border-color:var(--amber);color:var(--amber);}
+  .card .open .arr{transition:transform .2s;}
+  .card .open:hover .arr{transform:translateX(3px);}
+  .card .open[disabled]{opacity:.4;cursor:not-allowed;}
+
+  /* ============================================================
+     CONSULTING
+     ============================================================ */
+  .builds{display:grid;gap:1px;background:var(--line-soft);border:1px solid var(--line-soft);}
+  .build{background:var(--panel-2);padding:24px 28px;display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:center;transition:background .2s;}
+  .build:hover{background:var(--panel-3);}
+  .build .bno{font-family:"IBM Plex Mono",monospace;color:var(--amber);font-size:13px;letter-spacing:.1em;}
+  .build .bt{font-weight:700;font-size:17px;}
+  .build .bd{color:var(--muted);font-size:14.5px;margin-top:3px;}
+  .build .bs{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--muted);letter-spacing:.08em;text-align:right;}
+  @media(max-width:680px){.build{grid-template-columns:auto 1fr;}.build .bs{display:none;}}
+
+  .cap{margin-top:34px;}
+  .cap .mono{display:block;margin-bottom:14px;color:var(--amber);}
+  .cap-list{display:flex;flex-wrap:wrap;gap:10px;}
+  .cap-list span{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--muted);border:1px solid var(--line-soft);padding:7px 12px;letter-spacing:.04em;}
+
+  /* ============================================================
+     BACKGROUND / ENGINEERING RECORD
+     ============================================================ */
+  .record{display:grid;grid-template-columns:1.1fr 1fr;gap:clamp(28px,6vw,72px);align-items:start;}
+  @media(max-width:780px){.record{grid-template-columns:1fr;}}
+  .record p{color:var(--muted);font-size:16px;}
+  .record p b{color:var(--paper);font-weight:600;}
+  .facts{display:grid;gap:1px;background:var(--line-soft);border:1px solid var(--line-soft);}
+  .fact{background:var(--panel-2);padding:20px 22px;}
+  .fact .fk{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);}
+  .fact .fv{margin-top:6px;font-size:15px;color:var(--paper);line-height:1.45;}
+
+  /* ============================================================
+     CONTACT / FOOTER
+     ============================================================ */
+  footer{border-top:1px solid var(--line);padding:clamp(56px,9vw,96px) 0 60px;}
+  .contact h2{font-size:clamp(30px,6vw,60px);font-weight:900;letter-spacing:-.03em;line-height:1;margin:14px 0 0;}
+  .contact .amb{color:var(--amber);}
+  .links{margin-top:40px;display:flex;flex-wrap:wrap;gap:14px;}
+  .links a{
+    font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.06em;
+    border:1px solid var(--line);padding:13px 20px;transition:border-color .2s,color .2s;
+    display:inline-flex;align-items:center;gap:10px;
+  }
+  .links a:hover{border-color:var(--amber);color:var(--amber);}
+  .links a .lk{color:var(--amber);}
+  .links a:hover .lk{color:var(--amber-soft);}
+  .colophon{margin-top:54px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .colophon span{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);letter-spacing:.1em;}
+
+  /* ============================================================
+     DEMO MODAL
+     ============================================================ */
+  .modal{position:fixed;inset:0;z-index:90;display:none;align-items:center;justify-content:center;padding:clamp(12px,3vw,40px);background:rgba(6,10,18,.86);backdrop-filter:blur(4px);}
+  .modal.on{display:flex;}
+  .modal-box{width:100%;max-width:1080px;height:min(82vh,820px);background:var(--panel);border:1px solid var(--line);display:flex;flex-direction:column;}
+  .modal-bar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line-soft);}
+  .modal-bar .mt{font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.08em;}
+  .modal-bar .mt b{color:var(--amber);}
+  .modal-close{background:transparent;border:1px solid var(--line);color:var(--paper);font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.1em;padding:8px 14px;cursor:pointer;transition:border-color .2s,color .2s;}
+  .modal-close:hover{border-color:var(--amber);color:var(--amber);}
+  .modal-box iframe{flex:1;width:100%;border:none;background:#fff;}
+  .modal-empty{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;padding:40px;color:var(--muted);font-family:"IBM Plex Mono",monospace;font-size:13px;line-height:1.8;letter-spacing:.04em;}
+
+  /* ============================================================
+     MOTION  —  subtle plot-in reveals
+     ============================================================ */
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease;}
+  .reveal.in{opacity:1;transform:none;}
+  .hero h1 .ln span{transform:translateY(105%);transition:transform .8s cubic-bezier(.16,1,.3,1);}
+  .hero.loaded h1 .ln span{transform:none;}
+  .hero .lede,.hero .spec-strip,.hero .eyebrow{opacity:0;transform:translateY(14px);transition:opacity .7s ease .35s,transform .7s ease .35s;}
+  .hero.loaded .lede,.hero.loaded .spec-strip,.hero.loaded .eyebrow{opacity:1;transform:none;}
+
+  @media(prefers-reduced-motion:reduce){
+    *{transition:none!important;animation:none!important;}
+    .reveal{opacity:1;transform:none;}
+    .hero h1 .ln span,.hero .lede,.hero .spec-strip,.hero .eyebrow{opacity:1;transform:none;}
+  }
+  :focus-visible{outline:2px solid var(--amber);outline-offset:3px;}
+</style>
+</head>
+<body>
+
+<!-- ============================== NAV ============================== -->
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top">R.<b>GUERCIONI</b></a>
+    <nav class="nav-links">
+      <a href="#work">Work</a>
+      <a href="#consulting">Consulting</a>
+      <a href="#background">Background</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============================== HERO ============================== -->
+<a id="top"></a>
+<div class="hero" id="hero">
+  <div class="wrap">
+    <div class="sheet">
+      <span class="corner-tr"></span><span class="corner-bl"></span>
+      <span class="eyebrow">Sheet 00 · Index</span>
+      <h1>
+        <span class="ln"><span>RICARDO</span></span>
+        <span class="ln"><span>GUERCIONI</span></span>
+      </h1>
+      <p class="lede">Mechanical engineer turned <b>AI &amp; automation engineer</b>. I build AI systems for construction, operations, and the apps in between — grounded in the field, not the lab.</p>
+
+      <div class="spec-strip">
+        <div><div class="k">Role</div><div class="v">AI &amp; Automation Engineer · Founder, GNC AI Consulting</div></div>
+        <div><div class="k">Base</div><div class="v">Miami, FL</div></div>
+        <div><div class="k">Stack</div><div class="v">Claude · Python · React Native · Supabase · n8n</div></div>
+        <div><div class="k">Focus</div><div class="v">Construction · Ops automation · Indie SaaS</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== FEATURED WORK ============================== -->
+<section id="work">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <span class="eyebrow">Sheet 01 · Products</span>
+        <h2>Things I've built</h2>
+      </div>
+      <span class="count">FEATURED — 02</span>
+    </div>
+
+    <!-- PROJECT CARD TEMPLATE ▸ copy an <article> to add a project.
+         data-demo:
+           • a URL (https://…)  → opens that page in the modal
+           • a <template> id    → embeds that artifact's HTML live
+         Remove data-demo (or leave it empty) and the View button disables. -->
+
+    <div class="grid three">
+
+      <article class="card reveal" data-demo="" data-title="FieldStrata">
+        <div class="tag-row"><span class="sheet-no">FS-01</span><span class="status build">In build</span></div>
+        <h3>FieldStrata</h3>
+        <p>A construction AI platform that reads your project documents — submittals, RFIs, change orders, daily reports — then answers questions, drafts the email, and flags what's slipping. RAG over your own OneDrive, not a generic chatbot.</p>
+        <div class="meta">
+          <div class="row"><span class="mk">Stack</span><span class="mv">Next.js · React Native · Supabase · RAG</span></div>
+          <div class="row"><span class="mk">Role</span><span class="mv">Founder &amp; engineer</span></div>
+        </div>
+        <button class="open" disabled>View <span class="arr">→</span></button>
+      </article>
+
+      <article class="card reveal" data-demo="" data-title="Papelito">
+        <div class="tag-row"><span class="sheet-no">PAP-01</span><span class="status build">In build</span></div>
+        <h3>Papelito</h3>
+        <p>The classic Fishbowl / Salad Bowl party game, rebuilt for mobile. Pass-the-phone, two teams, three rounds — Describe It, Charades, One Word. No accounts, offline-first, with a one-time Pro unlock.</p>
+        <div class="meta">
+          <div class="row"><span class="mk">Stack</span><span class="mv">React Native · Expo · Zustand · RevenueCat</span></div>
+          <div class="row"><span class="mk">Role</span><span class="mv">Solo build</span></div>
+        </div>
+        <button class="open" disabled>View <span class="arr">→</span></button>
+      </article>
+
+      <article class="card reveal" data-demo="" data-title="RoomStrata">
+        <div class="tag-row"><span class="sheet-no">RS-01</span><span class="status build">In build</span></div>
+        <h3>RoomStrata</h3>
+        <p>The property / real-estate sibling to FieldStrata — operations and document intelligence for spaces instead of jobsites.</p>
+        <div class="meta">
+          <div class="row"><span class="mk">Stack</span><span class="mv">Next.js · Supabase</span></div>
+          <div class="row"><span class="mk">Role</span><span class="mv">Founder &amp; engineer</span></div>
+        </div>
+        <button class="open" disabled>View <span class="arr">→</span></button>
+      </article>
+
+      <article class="card reveal" data-demo="" data-title="XPLife">
+        <div class="tag-row"><span class="sheet-no">XPL-01</span><span class="status build">In build</span></div>
+        <h3>XPLife</h3>
+        <p>Real-life goals turned into an XP system — a gamified life and habit tracker that makes progress feel like leveling up.</p>
+        <button class="open" disabled>View <span class="arr">→</span></button>
+      </article>
+
+      <article class="card reveal" data-demo="" data-title="Savely">
+        <div class="tag-row"><span class="sheet-no">SAV-01</span><span class="status">Concept</span></div>
+        <h3>Savely</h3>
+        <p>An agent that hunts down savings — surfaces wasteful subscriptions and better rates, and helps you actually cancel.</p>
+        <button class="open" disabled>View <span class="arr">→</span></button>
+      </article>
+
+      <article class="card reveal" data-demo="" data-title="Museumly">
+        <div class="tag-row"><span class="sheet-no">MSM-01</span><span class="status">Concept</span></div>
+        <h3>Museumly</h3>
+        <p>A discovery and companion app for museums and exhibits. <em>— short description, confirm with me.</em></p>
+        <button class="open" disabled>View <span class="arr">→</span></button>
+      </article>
+
+      <article class="card reveal" data-demo="" data-title="Referl">
+        <div class="tag-row"><span class="sheet-no">REF-01</span><span class="status">Concept</span></div>
+        <h3>Referl</h3>
+        <p>A referral-code marketplace and tracker — share, find, and manage referral perks in one place.</p>
+        <button class="open" disabled>View <span class="arr">→</span></button>
+      </article>
+
+      <article class="card reveal" data-demo="" data-title="Habit Tracker">
+        <div class="tag-row"><span class="sheet-no">HAB-01</span><span class="status">Prototype</span></div>
+        <h3>Habit Tracker</h3>
+        <p>A React Native habit tracker with AI-generated insights and streaks. Built with Expo, PostgreSQL, and the OpenAI API.</p>
+        <button class="open" disabled>View <span class="arr">→</span></button>
+      </article>
+
+      <article class="card reveal" data-demo="" data-title="Local AI Assistant">
+        <div class="tag-row"><span class="sheet-no">AI-01</span><span class="status live">Running</span></div>
+        <h3>Local AI Assistant</h3>
+        <p>A self-hosted assistant on a local Qwen model, wired to Telegram — private AI that runs entirely on my own hardware.</p>
+        <button class="open" disabled>View <span class="arr">→</span></button>
+      </article>
+
+      <article class="card reveal" data-demo="" data-title="3D Tile Match">
+        <div class="tag-row"><span class="sheet-no">GME-01</span><span class="status build">In build</span></div>
+        <h3>3D Tile Match</h3>
+        <p>A 3D tile-matching puzzle game. <em>— short description, confirm with me.</em></p>
+        <button class="open" disabled>View <span class="arr">→</span></button>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================== CONSULTING ============================== -->
+<section id="consulting" style="background:linear-gradient(to bottom,transparent,rgba(11,17,32,.5),transparent);">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <span class="eyebrow">Sheet 02 · GNC AI Consulting</span>
+        <h2>Built for clients</h2>
+      </div>
+      <span class="count">5+ CLIENTS · ~30% AVG PRODUCTIVITY LIFT</span>
+    </div>
+
+    <div class="builds">
+      <div class="build reveal">
+        <span class="bno">C-01</span>
+        <div><div class="bt">Mercury financial dashboard</div><div class="bd">Live dashboard over a business's Mercury bank data, auto-synced every night.</div></div>
+        <div class="bs">Supabase · Vercel · Next.js</div>
+      </div>
+      <div class="build reveal">
+        <span class="bno">C-02</span>
+        <div><div class="bt">Real-estate ROI calculator</div><div class="bd">Interactive lead-gen / ROI model for a Miami real-estate agent, with breakeven analysis.</div></div>
+        <div class="bs">Next.js · SaaS-ready</div>
+      </div>
+      <div class="build reveal">
+        <span class="bno">C-03</span>
+        <div><div class="bt">Construction email agent</div><div class="bd">Reads project docs, drafts client emails, routes them to Slack for approve / reject.</div></div>
+        <div class="bs">Anthropic API · OneDrive · Slack</div>
+      </div>
+    </div>
+
+    <div class="cap reveal">
+      <span class="mono">Also delivered</span>
+      <div class="cap-list">
+        <span>Marketing workflows</span>
+        <span>Voice calling agents</span>
+        <span>Knowledge bases</span>
+        <span>Email assistants</span>
+        <span>Document standardization</span>
+        <span>Automated reporting</span>
+        <span>CRM integration</span>
+        <span>Cloud infrastructure</span>
+        <span>Custom SaaS apps</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== BACKGROUND ============================== -->
+<section id="background">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <span class="eyebrow">Sheet 03 · Record</span>
+        <h2>Where the field grounding comes from</h2>
+      </div>
+    </div>
+
+    <div class="record reveal">
+      <div>
+        <p><b>I spent years as a mechanical project manager before I wrote a line of AI.</b> At Tropic Mechanical Contractors I ran the mechanical scope — estimating through closeout — on roughly <b>$60M</b> of healthcare and commercial construction: UHealth Doral, Baptist Health Miami Lakes, Mount Sinai Westchester, Memorial Red Road, and the Motorola Plantation offices.</p>
+        <p style="margin-top:18px;">When AI got good, I pointed it at the work I already knew. I built and deployed <b>20+ internal tools</b> across departments — job costing, manpower tracking, schedule analysis, document management — because I understood the problems from the inside. That's the whole thesis behind FieldStrata and GNC AI Consulting.</p>
+      </div>
+      <div class="facts">
+        <div class="fact"><div class="fk">Education</div><div class="fv">B.S. Mechanical Engineering — Florida International University, 2022</div></div>
+        <div class="fact"><div class="fk">Roles</div><div class="fv">Project Manager &amp; AI / Improvement Engineer — Tropic Mechanical Contractors</div></div>
+        <div class="fact"><div class="fk">Impact</div><div class="fv">~80% faster document retrieval · ~30% less overtime · est. $200K/yr in errors avoided</div></div>
+        <div class="fact"><div class="fk">Certs</div><div class="fv">Microsoft Copilot Studio &amp; Azure AI Engineer — in progress</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== CONTACT ============================== -->
+<footer id="contact">
+  <div class="wrap contact">
+    <span class="eyebrow">Sheet 04 · Contact</span>
+    <h2>Let's build something<br><span class="amb">that actually ships.</span></h2>
+    <div class="links">
+      <a href="mailto:ricardoguercioni@gmail.com"><span class="lk">↳</span> ricardoguercioni@gmail.com</a>
+      <a href="https://www.linkedin.com/in/ricardo-guercioni" target="_blank" rel="noopener"><span class="lk">↳</span> LinkedIn</a>
+      <a href="https://github.com/gnc-devs" target="_blank" rel="noopener"><span class="lk">↳</span> GitHub</a>
+      <a href="https://gncaiconsulting.com" target="_blank" rel="noopener"><span class="lk">↳</span> gncaiconsulting.com</a>
+    </div>
+    <div class="colophon">
+      <span>© 2026 Ricardo Guercioni</span>
+      <span>Miami, FL · 25.76°N 80.19°W</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================== DEMO MODAL ============================== -->
+<div class="modal" id="modal" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <div class="modal-bar">
+      <span class="mt">DEMO · <b id="modalTitle">—</b></span>
+      <button class="modal-close" id="modalClose">CLOSE ✕</button>
+    </div>
+    <iframe id="modalFrame" title="Project demo" loading="lazy"></iframe>
+  </div>
+</div>
+
+<!--
+  ▸ HOW TO EMBED ONE OF YOUR HTML ARTIFACTS
+  Paste the artifact's full HTML inside a <template>, give it an id, then set the
+  card's  data-demo="that-id". Example:
+
+  <template id="demo-fieldstrata"> ...paste artifact HTML here... </template>
+  <article class="card lg" data-demo="demo-fieldstrata" data-title="FieldStrata"> ... </article>
+
+  For a hosted demo instead, just put the URL:  data-demo="https://fieldstrata.app"
+-->
+
+<script>
+  /* ---- hero plot-in on load ---- */
+  window.addEventListener('load', function(){
+    document.getElementById('hero').classList.add('loaded');
+  });
+
+  /* ---- scroll reveals ---- */
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:.16});
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+
+  /* ---- wire up project cards: enable View only when data-demo is set ---- */
+  var modal      = document.getElementById('modal');
+  var frame      = document.getElementById('modalFrame');
+  var modalTitle = document.getElementById('modalTitle');
+  var lastFocus  = null;
+
+  function openDemo(demo, title){
+    modalTitle.textContent = title || 'Project';
+    if(/^https?:\/\//i.test(demo)){
+      frame.removeAttribute('srcdoc'); frame.src = demo;
+    } else {
+      var tpl = document.getElementById(demo);
+      frame.removeAttribute('src');
+      frame.srcdoc = tpl ? tpl.innerHTML : '<body style="font-family:sans-serif;padding:40px;color:#444">Demo not found.</body>';
+    }
+    lastFocus = document.activeElement;
+    modal.classList.add('on'); modal.setAttribute('aria-hidden','false');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('modalClose').focus();
+  }
+  function closeDemo(){
+    modal.classList.remove('on'); modal.setAttribute('aria-hidden','true');
+    frame.removeAttribute('src'); frame.removeAttribute('srcdoc');
+    document.body.style.overflow = '';
+    if(lastFocus) lastFocus.focus();
+  }
+
+  document.querySelectorAll('.card').forEach(function(card){
+    var demo = (card.getAttribute('data-demo') || '').trim();
+    var btn  = card.querySelector('.open');
+    if(!btn) return;
+    if(demo){
+      btn.disabled = false;
+      btn.addEventListener('click', function(){ openDemo(demo, card.getAttribute('data-title')); });
+    } else {
+      btn.disabled = true;
+    }
+  });
+
+  document.getElementById('modalClose').addEventListener('click', closeDemo);
+  modal.addEventListener('click', function(e){ if(e.target === modal) closeDemo(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && modal.classList.contains('on')) closeDemo(); });
+</script>
+</body>
+</html>
