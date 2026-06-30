@@ -87,7 +87,7 @@
   /* ============================================================
      HERO  —  drawing title block
      ============================================================ */
-  .hero{position:relative;padding:clamp(64px,12vw,140px) 0 clamp(56px,9vw,104px);}
+  .hero{position:relative;padding:clamp(44px,8vw,104px) 0 clamp(38px,6vw,74px);}
   .sheet{
     position:relative;
     border:1px solid var(--line);
@@ -136,8 +136,8 @@
   /* ============================================================
      SECTION SCAFFOLD
      ============================================================ */
-  section{padding:clamp(56px,9vw,104px) 0;}
-  .sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:20px;margin-bottom:42px;flex-wrap:wrap;}
+  section{padding:clamp(40px,6vw,74px) 0;}
+  .sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:20px;margin-bottom:30px;flex-wrap:wrap;}
   .sec-head h2{font-size:clamp(26px,4vw,40px);font-weight:800;letter-spacing:-.02em;margin:12px 0 0;}
   .sec-head .count{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);letter-spacing:.12em;}
   .divider{height:1px;background:var(--line-soft);}
@@ -151,8 +151,8 @@
   @media(max-width:680px){.grid.three{grid-template-columns:1fr;}}
 
   .card{
-    position:relative;background:var(--panel-2);padding:30px 28px 26px;
-    display:flex;flex-direction:column;min-height:240px;
+    position:relative;background:var(--panel-2);padding:26px 28px 24px;
+    display:flex;flex-direction:column;min-height:208px;
     transition:background .25s,transform .25s;
   }
   .card:hover{background:var(--panel-3);}
@@ -162,7 +162,7 @@
   .status::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--muted);}
   .status.live::before,.status.shipped::before{background:var(--amber);box-shadow:0 0 0 3px rgba(200,146,58,.18);}
   .status.build::before{background:#5b86c9;}
-  .card h3{font-size:clamp(22px,2.6vw,30px);font-weight:800;letter-spacing:-.02em;margin:28px 0 0;}
+  .card h3{font-size:clamp(22px,2.6vw,30px);font-weight:800;letter-spacing:-.02em;margin:20px 0 0;}
   .card p{color:var(--muted);margin:12px 0 0;font-size:15.5px;line-height:1.55;}
 
   .meta{margin-top:22px;border-top:1px solid var(--line-soft);padding-top:16px;display:grid;gap:8px;}
@@ -213,10 +213,10 @@
   /* ============================================================
      CONTACT / FOOTER
      ============================================================ */
-  footer{border-top:1px solid var(--line);padding:clamp(56px,9vw,96px) 0 60px;}
+  footer{border-top:1px solid var(--line);padding:clamp(40px,6vw,72px) 0 48px;}
   .contact h2{font-size:clamp(30px,6vw,60px);font-weight:900;letter-spacing:-.03em;line-height:1;margin:14px 0 0;}
   .contact .amb{color:var(--amber);}
-  .links{margin-top:40px;display:flex;flex-wrap:wrap;gap:14px;}
+  .links{margin-top:30px;display:flex;flex-wrap:wrap;gap:14px;}
   .links a{
     font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.06em;
     border:1px solid var(--line);padding:13px 20px;transition:border-color .2s,color .2s;
@@ -225,7 +225,7 @@
   .links a:hover{border-color:var(--amber);color:var(--amber);}
   .links a .lk{color:var(--amber);}
   .links a:hover .lk{color:var(--amber-soft);}
-  .colophon{margin-top:54px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .colophon{margin-top:36px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
   .colophon span{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);letter-spacing:.1em;}
 
   /* ============================================================
@@ -365,13 +365,6 @@
         <button class="open" disabled>View <span class="arr">→</span></button>
       </article>
 
-      <article class="card reveal" data-demo="" data-title="Referl">
-        <div class="tag-row"><span class="sheet-no">REF-01</span><span class="status">Concept</span></div>
-        <h3>Referl</h3>
-        <p>A referral-code marketplace and tracker — share, find, and manage referral perks in one place.</p>
-        <button class="open" disabled>View <span class="arr">→</span></button>
-      </article>
-
       <article class="card reveal" data-demo="" data-title="Local AI Assistant">
         <div class="tag-row"><span class="sheet-no">AI-01</span><span class="status live">Running</span></div>
         <h3>Local AI Assistant</h3>
@@ -455,7 +448,7 @@
         <div class="fact"><div class="fk">Education</div><div class="fv">B.S. Mechanical Engineering — Florida International University, 2022</div></div>
         <div class="fact"><div class="fk">Roles</div><div class="fv">Project Manager &amp; AI / Improvement Engineer — Tropic Mechanical Contractors</div></div>
         <div class="fact"><div class="fk">Impact</div><div class="fv">~80% faster document retrieval · ~30% less overtime · est. $200K/yr in errors avoided</div></div>
-        <div class="fact"><div class="fk">Certs</div><div class="fv">Microsoft Copilot Studio &amp; Azure AI Engineer — in progress</div></div>
+        <div class="fact"><div class="fk">Certs</div><div class="fv">Microsoft Copilot Studio · Azure AI Engineer Associate — in progress · <a href="https://www.credly.com/users/ricardo-guercioni" target="_blank" rel="noopener" style="color:var(--amber);">Credly ↗</a></div></div>
       </div>
     </div>
   </div>
@@ -469,22 +462,52 @@
         <span class="eyebrow">Sheet 04 · Platforms</span>
         <h2>Other skills</h2>
       </div>
-      <span class="count">PLATFORMS — 03</span>
+      <span class="count">PLATFORMS — 09</span>
     </div>
 
     <div class="builds">
       <div class="build reveal">
         <span class="bno">S-01</span>
+        <div><div class="bt">Claude Code</div><div class="bd">Agentic coding in the terminal — building, refactoring, and automating dev workflows with Claude as a pair engineer.</div></div>
+        <div class="bs">Agents · CLI · Automation</div>
+      </div>
+      <div class="build reveal">
+        <span class="bno">S-02</span>
+        <div><div class="bt">n8n &amp; Zapier</div><div class="bd">Workflow automation across hundreds of apps — triggers, webhooks, and multi-step pipelines that connect tools without glue code.</div></div>
+        <div class="bs">Workflows · Webhooks · Integrations</div>
+      </div>
+      <div class="build reveal">
+        <span class="bno">S-03</span>
+        <div><div class="bt">Notion</div><div class="bd">Workspace, docs, and database design — wikis, trackers, and Notion API integrations wired into automations.</div></div>
+        <div class="bs">Databases · API · Docs</div>
+      </div>
+      <div class="build reveal">
+        <span class="bno">S-04</span>
+        <div><div class="bt">Next.js</div><div class="bd">Full-stack React framework — server-rendered apps, API routes, and SaaS front-ends deployed on Vercel.</div></div>
+        <div class="bs">React · SSR · Vercel</div>
+      </div>
+      <div class="build reveal">
+        <span class="bno">S-05</span>
+        <div><div class="bt">Supabase</div><div class="bd">Postgres database design, auth, row-level security, and realtime — the backend behind most of my apps.</div></div>
+        <div class="bs">Postgres · Auth · Realtime</div>
+      </div>
+      <div class="build reveal">
+        <span class="bno">S-06</span>
+        <div><div class="bt">ComfyUI</div><div class="bd">Node-based generative image &amp; video pipelines — custom workflows for AI media generation.</div></div>
+        <div class="bs">Diffusion · Pipelines · Media</div>
+      </div>
+      <div class="build reveal">
+        <span class="bno">S-07</span>
         <div><div class="bt">HubSpot</div><div class="bd">CRM setup, sales &amp; marketing workflow automation, and reporting — pipelines, contacts, and campaigns wired into the rest of the stack.</div></div>
         <div class="bs">CRM · Automation · Reporting</div>
       </div>
       <div class="build reveal">
-        <span class="bno">S-02</span>
+        <span class="bno">S-08</span>
         <div><div class="bt">Google Workspace</div><div class="bd">Gmail, Drive, Docs, Sheets, and Calendar automation and admin — Apps Script and API integrations that connect everyday tooling to AI workflows.</div></div>
         <div class="bs">Apps Script · APIs · Admin</div>
       </div>
       <div class="build reveal">
-        <span class="bno">S-03</span>
+        <span class="bno">S-09</span>
         <div><div class="bt">Google Analytics</div><div class="bd">GA4 setup, event &amp; conversion tracking, and dashboards — turning site and product activity into reporting that drives decisions.</div></div>
         <div class="bs">GA4 · Tracking · Dashboards</div>
       </div>
