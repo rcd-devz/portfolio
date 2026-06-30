@@ -318,6 +318,24 @@
 
     <div class="grid three">
 
+      <article class="card reveal" data-demo="" data-title="XPLife">
+        <div class="tag-row"><span class="sheet-no">XPL-01</span><span class="status build">Fighting with Apple Review</span></div>
+        <h3>XPLife</h3>
+        <p>Real-life goals turned into an XP system — a gamified life and habit tracker that makes progress feel like leveling up.</p>
+        <a class="open" href="https://testflight.apple.com/join/aNfZ5gWH" target="_blank" rel="noopener">View <span class="arr">→</span></a>
+      </article>
+
+      <article class="card reveal" data-demo="re-ads-roi-calculator.html" data-title="Real Estate Marketing ROI Calculator">
+        <div class="tag-row"><span class="sheet-no">ROI-01</span><span class="status live">Running</span></div>
+        <h3>RE Marketing ROI Calculator</h3>
+        <p>Interactive lead-gen / ROI model for a Miami real-estate agent — ad spend in, projected deals, revenue, and breakeven out. Built as a client-ready SaaS lead magnet.</p>
+        <div class="meta">
+          <div class="row"><span class="mk">Stack</span><span class="mv">Standalone web · SaaS-ready</span></div>
+          <div class="row"><span class="mk">Role</span><span class="mv">Founder &amp; engineer</span></div>
+        </div>
+        <button class="open">View <span class="arr">→</span></button>
+      </article>
+
       <article class="card reveal" data-demo="" data-title="Construction Management Software">
         <div class="tag-row"><span class="sheet-no">FS-01</span><span class="status build">In build</span></div>
         <h3>Construction Management Software</h3>
@@ -340,20 +358,6 @@
         <button class="open" disabled>View <span class="arr">→</span></button>
       </article>
 
-      <article class="card reveal" data-demo="" data-title="XPLife">
-        <div class="tag-row"><span class="sheet-no">XPL-01</span><span class="status build">Fighting with Apple Review</span></div>
-        <h3>XPLife</h3>
-        <p>Real-life goals turned into an XP system — a gamified life and habit tracker that makes progress feel like leveling up.</p>
-        <a class="open" href="https://testflight.apple.com/join/aNfZ5gWH" target="_blank" rel="noopener">Join TestFlight beta <span class="arr">→</span></a>
-      </article>
-
-      <article class="card reveal" data-demo="" data-title="Savely">
-        <div class="tag-row"><span class="sheet-no">SAV-01</span><span class="status">Concept</span></div>
-        <h3>Savely</h3>
-        <p>An agent that hunts down savings — surfaces wasteful subscriptions and better rates, and helps you actually cancel.</p>
-        <button class="open" disabled>View <span class="arr">→</span></button>
-      </article>
-
       <article class="card reveal" data-demo="" data-title="Museumly">
         <div class="tag-row"><span class="sheet-no">MSM-01</span><span class="status">Concept</span></div>
         <h3>Museumly</h3>
@@ -365,13 +369,6 @@
         <div class="tag-row"><span class="sheet-no">REF-01</span><span class="status">Concept</span></div>
         <h3>Referl</h3>
         <p>A referral-code marketplace and tracker — share, find, and manage referral perks in one place.</p>
-        <button class="open" disabled>View <span class="arr">→</span></button>
-      </article>
-
-      <article class="card reveal" data-demo="" data-title="Habit Tracker">
-        <div class="tag-row"><span class="sheet-no">HAB-01</span><span class="status build">Fighting with Apple Review</span></div>
-        <h3>Habit Tracker</h3>
-        <p>A React Native habit tracker with AI-generated insights and streaks. Built with Expo, PostgreSQL, and the OpenAI API.</p>
         <button class="open" disabled>View <span class="arr">→</span></button>
       </article>
 
@@ -555,7 +552,7 @@
 
   function openDemo(demo, title){
     modalTitle.textContent = title || 'Project';
-    if(/^https?:\/\//i.test(demo)){
+    if(/^https?:\/\//i.test(demo) || /\.html?($|[?#])/i.test(demo)){
       frame.removeAttribute('srcdoc'); frame.src = demo;
     } else {
       var tpl = document.getElementById(demo);
