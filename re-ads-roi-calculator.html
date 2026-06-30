@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Miami RE · ROI Calculator</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Playfair+Display:wght@700;900&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#06101e;
+  --card:rgba(10,22,40,0.9);
+  --border:#1a3050;
+  --border2:#0d1e35;
+  --blue:#4a90b8;
+  --gold:#e8b84b;
+  --green:#00e5a0;
+  --red:#ff5566;
+  --orange:#ff9944;
+  --purple:#b090f0;
+  --teal:#00c8d4;
+  --text:#ddd8cc;
+  --muted:#7aabbf;
+  --dim:#4a7a90;
+  --faint:#2e5a70;
+  --mono:'DM Mono',monospace;
+  --serif:'Playfair Display',serif;
+}
+
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--text);font-family:var(--mono);min-height:100vh;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 20% 0%,rgba(74,144,184,0.07) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 80%,rgba(0,229,160,0.04) 0%,transparent 50%);
+}
+
+/* HEADER */
+header{
+  border-bottom:1px solid var(--border);padding:22px 32px 18px;
+  background:rgba(4,10,20,0.95);position:sticky;top:0;z-index:200;
+  backdrop-filter:blur(14px);
+}
+header .eyebrow{font-size:9px;letter-spacing:4px;color:var(--blue);text-transform:uppercase;margin-bottom:5px}
+header h1{
+  font-family:var(--serif);font-size:22px;font-weight:900;
+  background:linear-gradient(100deg,var(--text) 0%,var(--blue) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+header .sub{color:var(--dim);font-size:10px;margin-top:4px}
+
+.wrap{max-width:1100px;margin:0 auto;padding:24px 20px}
+
+/* SECTION HEADERS — numbered badge style, clear visual break */
+.section-header{
+  display:flex;align-items:center;gap:12px;
+  margin:36px 0 14px;
+}
+.section-header:first-child{margin-top:0}
+.section-num{
+  background:var(--blue);color:#fff;
+  font-size:10px;font-weight:500;letter-spacing:1px;
+  width:26px;height:26px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.section-title{
+  font-size:11px;letter-spacing:2px;color:var(--text);
+  text-transform:uppercase;font-weight:500;
+  padding-bottom:10px;border-bottom:1px solid var(--border);
+  flex:1;
+}
+
+/* CHANNEL LABEL STRIP */
+.channel-strip{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  padding:9px 16px;border-radius:8px;margin:16px 0 8px;
+  font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:500;
+}
+
+/* STEP CARD — full-width vertical stacked */
+.step-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;margin-bottom:6px;display:flex;align-items:stretch;
+  overflow:hidden;transition:border-color 0.15s;
+}
+.step-card:hover{border-color:rgba(74,144,184,0.4)}
+.step-num{
+  background:rgba(74,144,184,0.1);color:var(--blue);
+  font-size:11px;font-weight:500;min-width:44px;
+  display:flex;align-items:flex-start;justify-content:center;
+  padding-top:16px;
+  border-right:1px solid var(--border);flex-shrink:0;
+}
+.step-body{
+  flex:1;padding:14px 20px;
+  display:flex;flex-direction:column;gap:4px;
+}
+.step-label{font-size:10px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;margin-bottom:2px}
+.step-formula{font-size:12px;color:var(--muted);font-style:italic;line-height:1.5}
+.step-detail{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.6}
+.step-result{font-size:15px;font-weight:500;margin-top:8px;padding-top:8px;border-top:1px solid var(--border2)}
+
+/* SUBTOTAL CARD */
+.subtotal-card{
+  background:rgba(20,40,70,0.7);border:1px solid var(--border);
+  border-radius:10px;margin-bottom:6px;display:flex;align-items:stretch;overflow:hidden;
+}
+.subtotal-card .step-num{background:rgba(232,184,75,0.1);color:var(--gold);padding-top:14px}
+.subtotal-card .step-body{padding:12px 20px}
+
+/* WARN CARD */
+.warn-card{
+  background:rgba(255,153,68,0.08);border:1px solid rgba(255,153,68,0.35);
+  border-radius:10px;padding:12px 16px;margin-bottom:6px;
+  font-size:11px;color:var(--orange);line-height:1.7;
+}
+
+/* KPI STRIP */
+.kpi-strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:8px;margin-bottom:10px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+.kpi-label{font-size:10px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin-bottom:5px}
+.kpi-val{font-size:20px;font-weight:500;font-family:var(--mono)}
+.kpi-sub{font-size:11px;color:var(--dim);margin-top:4px;line-height:1.5}
+
+/* PARAM GRID */
+.param-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.param-item label{display:block;color:var(--muted);font-size:11px;margin-bottom:4px}
+.param-item input[type=number]{
+  width:100%;background:rgba(6,14,28,0.8);border:1px solid var(--border);border-radius:8px;
+  color:var(--text);padding:7px 10px;font-family:var(--mono);font-size:13px;transition:border-color 0.2s;
+}
+.param-item input[type=number]:focus{outline:none;border-color:var(--blue)}
+.prefix{color:var(--blue);font-size:12px}
+
+/* CHANNEL PARAM CARD */
+.channel-card{border-radius:12px;padding:18px 22px;margin-bottom:8px}
+.channel-card.wom{background:rgba(0,229,160,0.05);border:1px solid rgba(0,229,160,0.2)}
+.channel-card.pod{background:rgba(0,200,212,0.05);border:1px solid rgba(0,200,212,0.2)}
+.channel-card.ads{background:rgba(74,144,184,0.05);border:1px solid rgba(74,144,184,0.2)}
+.channel-title{font-size:10px;letter-spacing:3px;text-transform:uppercase;font-weight:500;margin-bottom:14px}
+.channel-card .param-item label{font-size:11px}
+.channel-card > div:last-child{font-size:11px;color:var(--dim);margin-top:12px;line-height:1.7}
+
+/* SCENARIO PILLS */
+.sc-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.sc-btn{
+  flex:1 1 130px;padding:11px 13px;border-radius:10px;
+  border:1px solid var(--border);background:rgba(6,14,28,0.7);
+  color:var(--muted);cursor:pointer;text-align:left;transition:all 0.2s;font-family:var(--mono);
+}
+.sc-btn:hover{border-color:var(--blue);color:var(--text)}
+.sc-btn.active{border:2px solid var(--blue);background:rgba(74,144,184,0.12);color:var(--text)}
+.sc-btn .sc-emoji{font-size:17px;margin-bottom:4px}
+.sc-btn .sc-name{font-weight:500;font-size:13px}
+.sc-btn .sc-desc{font-size:10px;color:var(--dim);margin-top:2px}
+
+/* BUDGET PILL */
+.budget-pill{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  background:rgba(74,144,184,0.07);border:1px solid rgba(74,144,184,0.2);
+  border-radius:10px;padding:10px 16px;margin-bottom:10px;font-size:13px;
+}
+
+/* CUSTOM PANEL */
+#custom-panel{
+  background:rgba(10,22,42,0.9);border:1px solid var(--blue);
+  border-radius:12px;padding:18px 22px;margin-bottom:10px;display:none;
+}
+#custom-panel.visible{display:block}
+#custom-panel .param-item label{font-size:11px}
+
+/* PLATFORM BLOCK */
+.platform-block{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:8px}
+.platform-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;flex-wrap:wrap;gap:6px}
+.platform-math{font-size:11px;color:var(--dim);background:rgba(255,255,255,0.03);border-radius:6px;padding:7px 12px;margin-bottom:10px;line-height:1.8}
+.slider-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.slider-row label{color:var(--muted);font-size:11px;min-width:130px}
+.slider-row input[type=range]{
+  flex:1;cursor:pointer;
+  -webkit-appearance:none;appearance:none;
+  height:6px;border-radius:99px;
+  background:linear-gradient(to right, var(--c, var(--blue)) 0%, var(--c, var(--blue)) var(--v, 50%), var(--border) var(--v, 50%), var(--border) 100%);
+  outline:none;transition:background 0.15s;
+}
+.slider-row input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;
+  width:22px;height:22px;border-radius:50%;
+  background:#fff;
+  border:3px solid var(--c, var(--blue));
+  box-shadow:0 2px 8px rgba(0,0,0,0.4);
+  cursor:pointer;
+  transition:transform 0.15s, box-shadow 0.15s;
+}
+.slider-row input[type=range]::-webkit-slider-thumb:hover{
+  transform:scale(1.2);
+  box-shadow:0 3px 14px rgba(0,0,0,0.5);
+}
+.slider-row input[type=range]:active::-webkit-slider-thumb{
+  transform:scale(1.1);
+}
+.slider-row input[type=range]::-moz-range-thumb{
+  width:22px;height:22px;border-radius:50%;
+  background:#fff;border:3px solid var(--c, var(--blue));
+  box-shadow:0 2px 8px rgba(0,0,0,0.4);
+  cursor:pointer;
+}
+.slider-row input[type=range]::-moz-range-track{
+  height:6px;border-radius:99px;background:var(--border);
+}
+.slider-row input[type=range]::-moz-range-progress{
+  height:6px;border-radius:99px;background:var(--c, var(--blue));
+}
+.slider-val{font-family:var(--mono);font-size:13px;min-width:44px;text-align:right;color:var(--text)}
+.bar-track{height:4px;background:var(--border2);border-radius:3px;overflow:hidden;margin-top:6px}
+.bar-fill{height:100%;border-radius:3px;transition:width 0.4s}
+.p-hint{font-size:11px;color:var(--dim);margin-top:10px;line-height:1.6}
+
+/* COMPARE TABLE */
+.compare-table{width:100%;border-collapse:collapse;font-size:12px}
+.compare-table th{padding:9px 10px;color:var(--blue);font-weight:500;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+.compare-table td{padding:10px;border-bottom:1px solid var(--border2);color:var(--muted)}
+.compare-table tr:hover td{background:rgba(74,144,184,0.05);cursor:pointer}
+.compare-table tr.active-row td{background:rgba(74,144,184,0.08)}
+
+/* BROKER BANNER */
+.broker-banner{
+  background:rgba(232,184,75,0.07);border:1px solid rgba(232,184,75,0.25);
+  border-radius:12px;padding:14px 20px;margin-bottom:10px;
+  display:flex;gap:24px;flex-wrap:wrap;align-items:center;
+}
+.bb-item .bb-lbl{color:var(--muted);font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+.bb-item .bb-val{font-size:15px;font-family:var(--mono)}
+
+/* GLOSSARY */
+.glossary-grid{display:grid;grid-template-columns:1fr;gap:0}
+.gloss-row{
+  display:grid;grid-template-columns:110px 1fr;gap:18px;
+  padding:7px 0;align-items:baseline;
+}
+.gloss-term{
+  color:var(--blue);font-size:12px;font-weight:500;
+  font-family:var(--mono);letter-spacing:0.3px;
+}
+.gloss-def{font-size:12px;color:var(--muted);line-height:1.55}
+.gloss-def em{color:var(--text);font-style:italic;font-weight:500}
+.gloss-cat{
+  font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  margin:18px 0 8px;font-weight:500;
+  padding-bottom:6px;border-bottom:1px solid var(--border2);
+}
+.gloss-cat:first-child{margin-top:0}
+@media(max-width:540px){
+  .gloss-row{grid-template-columns:1fr;gap:2px;padding:8px 0;border-bottom:1px solid var(--border2)}
+  .gloss-term{font-size:13px}
+}
+
+.sources{text-align:center;color:var(--dim);font-size:10px;margin-top:24px;line-height:2}
+#split-warning{font-size:11px;color:var(--red);margin-bottom:8px;display:none}
+
+/* BREAKDOWN */
+.bd-panel{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px 28px}
+.bd-title{font-size:10px;letter-spacing:3px;text-transform:uppercase;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.bd-row{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--border2);font-size:13px;gap:12px}
+.bd-row:last-child{border-bottom:none}
+.bd-row .bd-k{color:var(--muted);flex:1}
+.bd-row .bd-v{font-family:var(--mono);font-size:14px;text-align:right;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">MIAMI · REAL ESTATE · ROI CALCULATOR</div>
+  <h1>2 Canales · Orgánico + Ads</h1>
+  <p class="sub">Orgánico separado de Ads · SE Tax · Broker tiered · Miami 2025–2026</p>
+</header>
+
+<div class="wrap">
+
+  <!-- ═══ SECTION 1: PARAMS ═══ -->
+  <div class="section-header"><span class="section-num">1</span><span class="section-title">Parámetros Generales</span></div>
+
+  <div class="broker-banner">
+    <div class="bb-item">
+      <div class="bb-lbl">🏢 Broker — Tramo 1 (&lt;$1M GCI)</div>
+      <div class="bb-val" style="color:var(--gold)">$500 / transacción</div>
+    </div>
+    <div style="color:var(--faint)">|</div>
+    <div class="bb-item">
+      <div class="bb-lbl">Tramo 2 (≥$1M GCI)</div>
+      <div class="bb-val" style="color:var(--green)">Agente retiene 90%</div>
+    </div>
+    <div style="color:var(--faint)">|</div>
+    <div class="bb-item">
+      <div class="bb-lbl">GCI combinado activo</div>
+      <div class="bb-val" id="broker-gci">—</div>
+    </div>
+    <div class="bb-item">
+      <div class="bb-lbl">Tramo activo</div>
+      <div class="bb-val" id="broker-tramo">—</div>
+    </div>
+  </div>
+
+  <!-- General params -->
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 24px;margin-bottom:10px">
+    <div style="font-size:10px;letter-spacing:2px;color:var(--blue);text-transform:uppercase;margin-bottom:14px">Comisiones &amp; Período</div>
+    <div class="param-grid">
+      <div class="param-item"><label>Precio venta promedio</label>
+        <div style="display:flex;align-items:center;gap:4px"><span class="prefix">$</span>
+        <input type="number" id="g_salePrice" value="500000" min="100000" max="3000000" step="25000"></div></div>
+      <div class="param-item"><label>Renta mensual promedio</label>
+        <div style="display:flex;align-items:center;gap:4px"><span class="prefix">$</span>
+        <input type="number" id="g_rentPrice" value="3000" min="1000" max="15000" step="250"></div></div>
+      <div class="param-item"><label>Comisión ventas %</label>
+        <input type="number" id="g_commPct" value="3" min="1" max="6" step="0.5"></div>
+      <div class="param-item"><label>Meses de análisis</label>
+        <input type="number" id="g_months" value="12" min="3" max="12" step="3"></div>
+      <div class="param-item"><label>Tax rate self-employed %</label>
+        <input type="number" id="g_taxRate" value="28" min="15" max="45" step="1"></div>
+    </div>
+  </div>
+
+  <!-- ═══ SECTION 2: ORGANIC ═══ -->
+  <div class="section-header"><span class="section-num">2</span><span class="section-title">Canal Orgánico — WOM + Podcast &amp; Contenido</span></div>
+  <div class="channel-card wom">
+    <div class="channel-title" style="color:var(--green)">🌱 WOM / Referidos / Podcast — costo de adquisición $0</div>
+    <div class="param-grid">
+      <div class="param-item"><label>Ventas orgánicas / año</label>
+        <input type="number" id="w_sales" value="6" min="0" max="100" step="1"></div>
+      <div class="param-item"><label>Rentas orgánicas / año</label>
+        <input type="number" id="w_rents" value="12" min="0" max="200" step="1"></div>
+      <div class="param-item"><label>Closing rate % (WOM/referidos)</label>
+        <input type="number" id="w_cr" value="90" min="10" max="100" step="5"></div>
+      <div class="param-item"><label>Leads podcast / año</label>
+        <input type="number" id="p_leads" value="0" min="0" max="500" step="1"></div>
+      <div class="param-item"><label>CR podcast ventas %</label>
+        <input type="number" id="p_crSales" value="20" min="1" max="90" step="1"></div>
+      <div class="param-item"><label>CR podcast rentas %</label>
+        <input type="number" id="p_crRent" value="30" min="1" max="90" step="1"></div>
+      <div class="param-item"><label>% leads podcast que buscan comprar<span style="display:block;font-size:9px;color:var(--dim);font-weight:400;margin-top:2px;letter-spacing:0">(el resto busca rentar)</span></label>
+        <input type="number" id="p_pctSales" value="40" min="0" max="100" step="5"></div>
+    </div>
+    <div>
+      WOM: los closings anuales son directos — el CR muestra cuántos leads implícitos necesita para cerrarlos.
+      Podcast: cuando empiece a generar inbound, sube el número de leads y su CR propio.
+      Ambos tienen costo de adquisición $0.
+    </div>
+  </div>
+
+  <!-- ═══ SECTION 3: ADS ═══ -->
+  <div class="section-header"><span class="section-num">3</span><span class="section-title">Canal Ads Pagados</span></div>
+
+  <div style="background:rgba(255,153,68,0.06);border:1px solid rgba(255,153,68,0.2);border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:11px;color:var(--muted);line-height:1.65">
+    <strong style="color:var(--orange)">⚠ CR de ads ≠ CR de WOM.</strong>
+    Los leads de ads son <em>cold leads</em> (alguien rellenó un formulario tras ver un anuncio) — la mayoría nunca contesta. Solo ~27% de los leads de internet son siquiera contactados.
+    Benchmarks industria 2025-2026:
+    <strong style="color:var(--text)">Facebook/Google 1-2.5%</strong> ·
+    <strong style="color:var(--text)">Zillow/portales 2-5%</strong> ·
+    <strong style="color:var(--text)">Top performers con ISA 5-7%</strong>.
+    Es <em>lead-to-close</em>, no <em>appointment-to-close</em>. El 90% WOM es de gente que ya te conoce o te refirieron — pool completamente distinto.
+  </div>
+
+  <div class="sc-row" id="sc-row">
+    <button class="sc-btn" data-sc="conservative"><div class="sc-emoji">🐢</div><div class="sc-name">Conservador</div><div class="sc-desc">$500/mes · CR 1% v / 1.5% r</div></button>
+    <button class="sc-btn active" data-sc="moderate"><div class="sc-emoji">🦊</div><div class="sc-name">Moderado</div><div class="sc-desc">$1,200/mes · CR 2% v / 3% r</div></button>
+    <button class="sc-btn" data-sc="aggressive"><div class="sc-emoji">🦁</div><div class="sc-name">Agresivo</div><div class="sc-desc">$2,500/mes · CR 3% v / 4% r</div></button>
+    <button class="sc-btn" data-sc="custom"><div class="sc-emoji">⚙️</div><div class="sc-name">Custom</div><div class="sc-desc">Ajusta manualmente</div></button>
+  </div>
+
+  <div id="budget-pill" class="budget-pill"></div>
+
+  <div id="custom-panel">
+    <div style="font-size:10px;letter-spacing:2px;color:var(--blue);text-transform:uppercase;margin-bottom:14px">Custom — Ads</div>
+    <div class="param-grid">
+      <div class="param-item"><label>Budget ads / mes</label>
+        <div style="display:flex;align-items:center;gap:4px"><span class="prefix">$</span>
+        <input type="number" id="c_budget" value="1200" min="100" max="15000" step="100"></div></div>
+      <div class="param-item"><label>Closing rate ventas % <small style="color:var(--dim)">lead-to-close (1-5% típico)</small></label>
+        <input type="number" id="c_crSales" value="2" min="0.1" max="20" step="0.5"></div>
+      <div class="param-item"><label>Closing rate rentas %  <small style="color:var(--dim)">lead-to-close (2-7% típico)</small></label>
+        <input type="number" id="c_crRent" value="3" min="0.1" max="20" step="0.5"></div>
+      <div class="param-item"><label>CRM / mes</label>
+        <div style="display:flex;align-items:center;gap:4px"><span class="prefix">$</span>
+        <input type="number" id="c_crm" value="150" min="0" max="1000" step="50"></div></div>
+      <div class="param-item"><label>Otros gastos / mes</label>
+        <div style="display:flex;align-items:center;gap:4px"><span class="prefix">$</span>
+        <input type="number" id="c_other" value="100" min="0" max="3000" step="50"></div></div>
+      <div class="param-item"><label>% de leads que buscan comprar<span style="display:block;font-size:9px;color:var(--dim);font-weight:400;margin-top:2px;letter-spacing:0">(el resto busca rentar)</span></label>
+        <input type="number" id="c_pctSales" value="40" min="0" max="100" step="5"></div>
+    </div>
+  </div>
+
+  <!-- ═══ SECTION 4: MATH ═══ -->
+  <div class="section-header"><span class="section-num">4</span><span class="section-title">Matemática Paso a Paso</span></div>
+  <div id="math-steps"><!-- JS --></div>
+
+  <!-- ═══ SECTION 5: KPIs ═══ -->
+  <div class="section-header"><span class="section-num">5</span><span class="section-title">KPIs Clave</span></div>
+  <div id="breakeven-card" style="margin-bottom:10px"><!-- JS --></div>
+  <div class="kpi-strip" id="kpi-strip"><!-- JS --></div>
+
+  <!-- ═══ SECTION 6: PLATFORMS ═══ -->
+  <div class="section-header"><span class="section-num">6</span><span class="section-title">Plataformas de Ads</span></div>
+  <div id="platform-budget-banner" class="budget-pill" style="margin-bottom:10px"></div>
+  <div id="split-warning">⚠ La suma de porcentajes debe ser 100%</div>
+  <div id="platform-blocks"><!-- JS --></div>
+
+  <!-- ═══ SECTION 7: COMPARE ═══ -->
+  <div class="section-header"><span class="section-num">7</span><span class="section-title">Comparar Escenarios de Ads</span></div>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 24px;overflow-x:auto;margin-bottom:10px">
+    <table class="compare-table" id="compare-table"><!-- JS --></table>
+    <div style="margin-top:14px;font-size:11px;color:var(--dim);line-height:1.9">
+      * CR ads = mismo % para todas las plataformas (sin multiplicadores de intent)<br>
+      * WOM y Podcast se suman igual en todos los escenarios (son independientes de los ads)<br>
+      * Cap: 20 ventas + 40 rentas / año agente solo · ROI calculado sobre gasto en ads + herramientas
+    </div>
+  </div>
+
+  <!-- ═══ SECTION 8: BREAKDOWN ═══ -->
+  <div class="section-header"><span class="section-num">8</span><span class="section-title">Desglose Simple</span></div>
+  <div id="breakdown-income" class="bd-panel" style="margin-bottom:10px"><!-- JS --></div>
+  <div id="breakdown-expenses" class="bd-panel" style="margin-bottom:10px"><!-- JS --></div>
+  <div id="breakdown-result" class="bd-panel" style="margin-bottom:10px"><!-- JS --></div>
+
+  <!-- ═══ SECTION 9: GLOSSARY ═══ -->
+  <div class="section-header"><span class="section-num">9</span><span class="section-title">Glosario · Acrónimos y Traducciones</span></div>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px 28px;margin-bottom:10px">
+
+    <div class="gloss-cat" style="color:var(--blue)">📐 Métricas</div>
+    <div class="glossary-grid">
+      <div class="gloss-row"><span class="gloss-term">CR (lead-to-close)</span><span class="gloss-def"><em>tasa de cierre de leads</em> — % de leads crudos que terminan firmando. Industria: 0.4-1.2% promedio · Facebook/Google 1-2.5% · Zillow 2-5% · Top performers 5-7%. <strong>Esto es lo que usa el calculador para ads.</strong></span></div>
+      <div class="gloss-row"><span class="gloss-term">CR (qualified)</span><span class="gloss-def">% de leads <em>ya calificados</em> (contactados, interesados, ready) que cierran. Industria: 20-30%. NO confundir con lead-to-close — son pools distintos.</span></div>
+      <div class="gloss-row"><span class="gloss-term">CR (WOM)</span><span class="gloss-def">% de referidos que cierran. Muy alto (80-95%) porque ya hay confianza pre-establecida. <strong>Es un pool distinto al de ads.</strong></span></div>
+      <div class="gloss-row"><span class="gloss-term">CPL</span><span class="gloss-def">Cost Per Lead · <em>costo por lead</em> — pago por cada persona interesada (no por cierre).</span></div>
+      <div class="gloss-row"><span class="gloss-term">CPM</span><span class="gloss-def">Cost Per Mille · <em>costo por 1,000 impresiones</em>.</span></div>
+      <div class="gloss-row"><span class="gloss-term">CPC</span><span class="gloss-def">Cost Per Click · <em>costo por clic</em>.</span></div>
+      <div class="gloss-row"><span class="gloss-term">ROI</span><span class="gloss-def">Return On Investment · <em>retorno sobre inversión</em> — (ganancia − inversión) ÷ inversión × 100.</span></div>
+      <div class="gloss-row"><span class="gloss-term">GCI</span><span class="gloss-def">Gross Commission Income · <em>ingreso bruto</em> — comisiones antes del broker y tax.</span></div>
+      <div class="gloss-row"><span class="gloss-term">SE Tax</span><span class="gloss-def">Self-Employed Tax · federal + 15.3% SS/Medicare. Agents = 1099.</span></div>
+      <div class="gloss-row"><span class="gloss-term">Net</span><span class="gloss-def"><em>neto</em> — lo que queda después de restar costos.</span></div>
+      <div class="gloss-row"><span class="gloss-term">Gross</span><span class="gloss-def"><em>bruto</em> — antes de descontar nada.</span></div>
+      <div class="gloss-row"><span class="gloss-term">Breakeven</span><span class="gloss-def"><em>punto de equilibrio</em> — ingresos mínimos donde los ads se pagan solos.</span></div>
+      <div class="gloss-row"><span class="gloss-term">Uplift</span><span class="gloss-def"><em>incremento marginal</em> — diferencia con vs sin ads.</span></div>
+    </div>
+
+    <div class="gloss-cat" style="color:var(--green)">🌱 Canales de adquisición</div>
+    <div class="glossary-grid">
+      <div class="gloss-row"><span class="gloss-term">WOM</span><span class="gloss-def">Word Of Mouth · <em>boca a boca</em> — referidos. CR muy alto (80-95%).</span></div>
+      <div class="gloss-row"><span class="gloss-term">Orgánico</span><span class="gloss-def">Tráfico sin pagar — contenido propio, podcast, social, SEO.</span></div>
+      <div class="gloss-row"><span class="gloss-term">Inbound</span><span class="gloss-def"><em>entrante</em> — leads que te encuentran (vs outbound, tú los buscas).</span></div>
+      <div class="gloss-row"><span class="gloss-term">Cold lead</span><span class="gloss-def"><em>lead frío</em> — no te conoce, vio tu anuncio. CR 1-3%.</span></div>
+      <div class="gloss-row"><span class="gloss-term">Warm lead</span><span class="gloss-def"><em>lead tibio</em> — ya busca activamente o te conoce. CR 3-7%.</span></div>
+      <div class="gloss-row"><span class="gloss-term">Intent</span><span class="gloss-def"><em>intención</em> — qué tan listo está el lead. Google = alta · Facebook = baja.</span></div>
+    </div>
+
+    <div class="gloss-cat" style="color:var(--gold)">🏢 Real estate &amp; broker</div>
+    <div class="glossary-grid">
+      <div class="gloss-row"><span class="gloss-term">Broker fee</span><span class="gloss-def">Corte de la brokerage por tx. Acá: $500 flat o 10% según tramo.</span></div>
+      <div class="gloss-row"><span class="gloss-term">Split / Tramo</span><span class="gloss-def">Cómo se divide la comisión agente/broker. Tu split: $500/tx &lt;$1M, luego 90/10.</span></div>
+      <div class="gloss-row"><span class="gloss-term">Tx</span><span class="gloss-def">Transaction · <em>transacción</em>. Cada venta o renta = 1 tx.</span></div>
+      <div class="gloss-row"><span class="gloss-term">Listing</span><span class="gloss-def">Propiedad activa en el MLS.</span></div>
+      <div class="gloss-row"><span class="gloss-term">MLS</span><span class="gloss-def">Multiple Listing Service · base de datos de propiedades.</span></div>
+      <div class="gloss-row"><span class="gloss-term">E&amp;O</span><span class="gloss-def">Errors &amp; Omissions Insurance · <em>seguro profesional</em>.</span></div>
+      <div class="gloss-row"><span class="gloss-term">NAR</span><span class="gloss-def">National Association of Realtors. Settlement 2024-25 → CPMs +20-35%.</span></div>
+    </div>
+
+    <div class="gloss-cat" style="color:var(--purple)">⚙️ Herramientas &amp; ads</div>
+    <div class="glossary-grid">
+      <div class="gloss-row"><span class="gloss-term">CRM</span><span class="gloss-def">Customer Relationship Management · Follow Up Boss, KVCore, HubSpot.</span></div>
+      <div class="gloss-row"><span class="gloss-term">Retargeting</span><span class="gloss-def">Anuncios a quien ya te vio. CPL 50-70% más bajo.</span></div>
+      <div class="gloss-row"><span class="gloss-term">Lead form</span><span class="gloss-def">Formulario nativo (dentro de la plataforma) o externo.</span></div>
+      <div class="gloss-row"><span class="gloss-term">Nurturing</span><span class="gloss-def"><em>cultivar el lead</em> — seguimiento hasta cierre. 2-12 meses según intent.</span></div>
+      <div class="gloss-row"><span class="gloss-term">Brand awareness</span><span class="gloss-def"><em>reconocimiento</em> — campañas que no piden acción inmediata.</span></div>
+      <div class="gloss-row"><span class="gloss-term">Flywheel</span><span class="gloss-def"><em>volante</em> — momentum compuesto del contenido.</span></div>
+    </div>
+
+    <div class="gloss-cat" style="color:var(--orange)">📊 Términos del modelo</div>
+    <div class="glossary-grid">
+      <div class="gloss-row"><span class="gloss-term">Baseline</span><span class="gloss-def"><em>línea base</em> — escenario sin ads, punto de comparación.</span></div>
+      <div class="gloss-row"><span class="gloss-term">Capacity cap</span><span class="gloss-def"><em>tope</em> — 20 ventas + 40 rentas/año máx para agente solo.</span></div>
+      <div class="gloss-row"><span class="gloss-term">Pre-tax</span><span class="gloss-def"><em>antes de impuestos</em> — ganancia tras gastos, antes de SE tax.</span></div>
+      <div class="gloss-row"><span class="gloss-term">Post-tax</span><span class="gloss-def"><em>después de impuestos</em> — lo que entra al bolsillo.</span></div>
+      <div class="gloss-row"><span class="gloss-term">Blended CR</span><span class="gloss-def"><em>CR ponderado</em> — combina CR de ventas y rentas según su mix.</span></div>
+      <div class="gloss-row"><span class="gloss-term">Buyer split</span><span class="gloss-def">% leads que buscan comprar vs rentar. Default: 40% / 60%.</span></div>
+    </div>
+  </div>
+
+  <div class="sources">
+    Benchmarks 2025-2026: Ylopo · Follow Up Boss · RealScout · JustCall · NAR · AgentZap · The Close · 91estate<br>
+    Lead-to-close: 0.4-1.2% promedio industria · FB/Google 1-2.5% · Zillow 2-5% top 7-9% · ISA teams 5-7% · Referidos 25%+<br>
+    CPL Miami: $16.61 RE Facebook (LocaliQ 2025) · TikTok $15-45 (Benly.ai 2026) · NAR settlement +20-35% CPM en metros grandes
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────
+// CONFIG
+// ─────────────────────────────────────────────────────────
+const PLATFORMS = [
+  { id:'fb',     label:'Facebook / Instagram', color:'#4a90b8', defaultCPL:20,  defaultPct:40, hint:'Cold social leads. Retargeting baja CPL 50-70%. Lead forms nativas > links externos. CPL Miami: $17-28.' },
+  { id:'google', label:'Google Ads',           color:'#e8b84b', defaultCPL:55,  defaultPct:30, hint:'Alta intención de búsqueda. CPL más alto pero leads más calificados y ciclo de cierre más corto.' },
+  { id:'zillow', label:'Zillow / Portales',    color:'#ff9944', defaultCPL:85,  defaultPct:20, hint:'Leads warm — ya están buscando activamente. Nurturing más corto (2-3 meses vs 6-12 social).' },
+  { id:'tiktok', label:'TikTok Ads',           color:'#b090f0', defaultCPL:25,  defaultPct:10, hint:'Brand awareness. Mayor volumen, menor intención inmediata. CPL $15-45 residencial.' },
+];
+
+// Scenarios: one single CR for all platforms — simple and honest
+const SCENARIOS = {
+  conservative: { budget:500,  crSales:1,   crRent:1.5, crm:0,   other:100, pctSales:40, label:'Conservador', emoji:'🐢' },
+  moderate:     { budget:1200, crSales:2,   crRent:3,   crm:150, other:100, pctSales:40, label:'Moderado',     emoji:'🦊' },
+  aggressive:   { budget:2500, crSales:3,   crRent:4,   crm:200, other:100, pctSales:40, label:'Agresivo',     emoji:'🦁' },
+  custom:       { budget:1200, crSales:2,   crRent:3,   crm:150, other:100, pctSales:40, label:'Custom',       emoji:'⚙️' },
+};
+
+const AGENT_CAPACITY = { maxSales:20, maxRents:40 };
+
+let splits = { fb:40, google:30, zillow:20, tiktok:10 };
+let cpls   = { fb:20, google:55, zillow:85, tiktok:25 };
+let activeScenario = 'moderate';
+
+// ─────────────────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────────────────
+const usd      = n => '$' + Math.round(n).toLocaleString('en-US');
+const pct      = (n,d=1) => Number(n).toFixed(d) + '%';
+const fmt      = (n,d=0) => Number(n).toFixed(d);
+const g        = id => parseFloat(document.getElementById(id)?.value) || 0;
+const roiColor = r => r>300?'var(--green)':r>100?'var(--gold)':r>0?'var(--orange)':'var(--red)';
+
+// ─────────────────────────────────────────────────────────
+// BROKER FEE — tiered: <$1M → flat $500/tx, ≥$1M → 90/10
+// ─────────────────────────────────────────────────────────
+function calcBrokerFee(gross, nClosings) {
+  const THRESHOLD = 1000000, FLAT = 500, KEEP = 0.90;
+  let fee = 0, label = '';
+  const nTx = Math.round(nClosings);
+
+  if (gross < THRESHOLD) {
+    fee   = nTx * FLAT;
+    label = `$500 × ${nTx} tx`;
+  } else {
+    const avgPerTx  = gross / Math.max(nTx, 1);
+    const nBelow    = Math.floor(THRESHOLD / avgPerTx);
+    const nAbove    = Math.max(0, nTx - nBelow);
+    const grossAbove = gross - nBelow * avgPerTx;
+    fee   = (nBelow * FLAT) + (grossAbove * (1 - KEEP));
+    label = `${nBelow}×$500 + ${nAbove}×10%`;
+  }
+
+  return { fee, net: gross - fee, label, effPct: gross > 0 ? ((gross-fee)/gross*100) : 100 };
+}
+
+// ─────────────────────────────────────────────────────────
+// CALC — three separate channels, then combined
+// ─────────────────────────────────────────────────────────
+function calcAll(sc) {
+  const salePrice  = g('g_salePrice');
+  const rentPrice  = g('g_rentPrice');
+  const commPct    = g('g_commPct');
+  const months     = g('g_months');
+  const taxRate    = g('g_taxRate');
+
+  // ── CHANNEL A: WOM ──────────────────────────────────────
+  const wSales     = g('w_sales');           // closings/year
+  const wRents     = g('w_rents');
+  const wCR        = g('w_cr');              // closing rate %
+  const wSalesCl   = (wSales / 12) * months;
+  const wRentsCl   = (wRents / 12) * months;
+  const wLeadsSales = wCR > 0 ? wSalesCl / (wCR / 100) : 0;  // implied leads
+  const wLeadsRents = wCR > 0 ? wRentsCl / (wCR / 100) : 0;
+  const wGrossSales = wSalesCl * salePrice * (commPct / 100);
+  const wGrossRents = wRentsCl * rentPrice;
+  const wGross      = wGrossSales + wGrossRents;
+  const wBroker     = calcBrokerFee(wGross, wSalesCl + wRentsCl);
+  const wCPL        = 0; // no paid acquisition
+
+  // ── CHANNEL B: PODCAST / ORGANIC ────────────────────────
+  const pLeadsYear  = g('p_leads');          // leads/year from podcast/organic
+  const pCRSales    = g('p_crSales');        // closing rate ventas %
+  const pCRRent     = g('p_crRent');         // closing rate rentas %
+  const pPctSales   = g('p_pctSales') / 100; // fraction of leads → sales track
+  const pLeads      = (pLeadsYear / 12) * months;
+  const pLeadsSales = pLeads * pPctSales;
+  const pLeadsRent  = pLeads * (1 - pPctSales);
+  const pSalesCl    = pLeadsSales * (pCRSales / 100);
+  const pRentsCl    = pLeadsRent  * (pCRRent  / 100);
+  const pGrossSales = pSalesCl * salePrice * (commPct / 100);
+  const pGrossRents = pRentsCl * rentPrice;
+  const pGross      = pGrossSales + pGrossRents;
+  const pBroker     = calcBrokerFee(pGross, pSalesCl + pRentsCl);
+  const pCPL        = 0; // no paid acquisition
+
+  // ── CHANNEL C: PAID ADS ─────────────────────────────────
+  const annBudget   = sc.budget * months;
+  const adCRSales   = sc.crSales;            // SAME % for all platforms
+  const adCRRent    = sc.crRent;
+  const adPctSales  = (sc.pctSales || 40) / 100;
+
+  let adLeads = 0;
+  const breakdown = {};
+  PLATFORMS.forEach(p => {
+    const bgt   = annBudget * ((splits[p.id] || 0) / 100);
+    const cpl   = cpls[p.id] || p.defaultCPL;
+    const leads = cpl > 0 ? Math.floor(bgt / cpl) : 0;
+    // One CR for all platforms — simple
+    const leadsSales = leads * adPctSales;
+    const leadsRent  = leads * (1 - adPctSales);
+    const sales = leadsSales * (adCRSales / 100);
+    const rents = leadsRent  * (adCRRent  / 100);
+    breakdown[p.id] = { budget:bgt, cpl, leads, sales, rents };
+    adLeads += leads;
+  });
+
+  const adSalesCl = Object.values(breakdown).reduce((s,b) => s + b.sales, 0);
+  const adRentsCl = Object.values(breakdown).reduce((s,b) => s + b.rents, 0);
+  const adGrossSales = adSalesCl * salePrice * (commPct / 100);
+  const adGrossRents = adRentsCl * rentPrice;
+  const adGross      = adGrossSales + adGrossRents;
+  const adBroker     = calcBrokerFee(adGross, adSalesCl + adRentsCl);
+  const avgCPL       = adLeads > 0 ? annBudget / adLeads : 0;
+  const adCPLClose   = (adSalesCl + adRentsCl) > 0 ? annBudget / (adSalesCl + adRentsCl) : 0;
+
+  // ── COMBINED ────────────────────────────────────────────
+  const rawTotSales = wSalesCl + pSalesCl + adSalesCl;
+  const rawTotRents = wRentsCl + pRentsCl + adRentsCl;
+  const capSales    = AGENT_CAPACITY.maxSales * (months / 12);
+  const capRents    = AGENT_CAPACITY.maxRents * (months / 12);
+  const totSales    = Math.min(rawTotSales, capSales);
+  const totRents    = Math.min(rawTotRents, capRents);
+  const capWarn     = rawTotSales > capSales || rawTotRents > capRents;
+
+  // Combined gross & broker on total (to apply tiered correctly)
+  const combGrossSales = totSales * salePrice * (commPct / 100);
+  const combGrossRents = totRents * rentPrice;
+  const combGross      = combGrossSales + combGrossRents;
+  const combBroker     = calcBrokerFee(combGross, totSales + totRents);
+
+  // Expenses (ads channel only — WOM/podcast have no paid cost)
+  const annCRM    = sc.crm   * months;
+  const annOther  = sc.other * months;
+  const totalExp  = annBudget + annCRM + annOther;
+  const preProfit = combBroker.net - totalExp;
+  const taxes     = Math.max(0, preProfit * (taxRate / 100));
+  const netProfit = preProfit - taxes;
+
+  // ROI is on ads + tools investment
+  const roi = totalExp > 0 ? ((combBroker.net - totalExp) / totalExp * 100) : 0;
+
+  // ── BREAKEVEN ────────────────────────────────────────────
+  // Goal: ad gross needed to cover totalExp after broker fee and tax.
+  // We want: (adGross_needed × brokerEff) × (1 − taxRate) = totalExp
+  // So: adGross_needed = totalExp / (brokerEff × taxMult)
+  const brokerEff    = combBroker.effPct / 100;
+  const taxMult      = 1 - (taxRate / 100);
+  const grossNeeded  = brokerEff > 0 && taxMult > 0 ? totalExp / (brokerEff * taxMult) : Infinity;
+
+  // Average commission value per close (blended sales/rents mix)
+  const avgSaleComm  = salePrice * (commPct / 100);
+  const avgRentComm  = rentPrice;
+  const avgCloseVal  = adPctSales * avgSaleComm + (1 - adPctSales) * avgRentComm;
+
+  // How many extra closes needed from ads (blended)
+  const closesNeeded = avgCloseVal > 0 ? grossNeeded / avgCloseVal : Infinity;
+
+  // BLENDED CR% needed (apples to apples comparison)
+  // Total ad leads × CR_blended = closesNeeded
+  // crNeededBlended = closesNeeded / adLeads
+  const crNeededBlended = adLeads > 0 ? (closesNeeded / adLeads) * 100 : Infinity;
+
+  // Current effective blended CR (weighted by sales/rents split)
+  const adBlendedCR = (adPctSales * adCRSales) + ((1 - adPctSales) * adCRRent);
+
+  // Is current blended CR above the breakeven blended CR?
+  const beOk = adBlendedCR >= crNeededBlended && adGross >= grossNeeded;
+
+  return {
+    // Channel A
+    wSalesCl, wRentsCl, wLeadsSales, wLeadsRents, wCR,
+    wGrossSales, wGrossRents, wGross, wBroker,
+    // Channel B
+    pLeads, pLeadsSales, pLeadsRent, pSalesCl, pRentsCl,
+    pCRSales, pCRRent, pGrossSales, pGrossRents, pGross, pBroker,
+    // Channel C
+    annBudget, adLeads, breakdown, adCRSales, adCRRent,
+    adSalesCl, adRentsCl, adGrossSales, adGrossRents, adGross, adBroker,
+    avgCPL, adCPLClose,
+    // Combined
+    rawTotSales, rawTotRents, totSales, totRents,
+    combGross, combBroker,
+    annCRM, annOther, totalExp,
+    preProfit, taxes, netProfit, roi,
+    capWarn, sc,
+    totalClosings: totSales + totRents,
+    // Breakeven
+    grossNeeded, closesNeeded,
+    crNeeded: crNeededBlended,
+    crNeededBlended,
+    adBlendedCR,
+    beOk,
+    avgCloseVal,
+  };
+}
+
+function getActiveSC() {
+  if (activeScenario === 'custom') {
+    return {
+      budget:g('c_budget'), crSales:g('c_crSales'), crRent:g('c_crRent'),
+      crm:g('c_crm'), other:g('c_other'), pctSales:g('c_pctSales'),
+      label:'Custom', emoji:'⚙️',
+    };
+  }
+  return SCENARIOS[activeScenario];
+}
+
+// ─────────────────────────────────────────────────────────
+// STEP CARD — vertical, result at bottom
+// ─────────────────────────────────────────────────────────
+function stepCard(num, label, formula, value, detail, color, isWarn) {
+  const borderStyle = isWarn ? 'border-color:rgba(255,153,68,0.5)' : '';
+  const numBg = isWarn ? 'background:rgba(255,153,68,0.12);color:var(--orange)' : '';
+  return `
+    <div class="step-card" style="${borderStyle}">
+      <div class="step-num" style="${numBg}">${num}</div>
+      <div class="step-body">
+        <div class="step-label">${label}</div>
+        <div class="step-formula">${formula}</div>
+        ${detail ? `<div class="step-detail">${detail}</div>` : ''}
+        <div class="step-result" style="color:${color||'var(--text)'}">${value}</div>
+      </div>
+    </div>`;
+}
+
+function channelStrip(color, bg, border, icon, title) {
+  return `<div class="channel-strip" style="background:${bg};border:1px solid ${border};color:${color}">${icon} ${title}</div>`;
+}
+
+function subtotalCard(label, value, color) {
+  return `
+    <div class="subtotal-card">
+      <div class="step-num" style="background:rgba(232,184,75,0.1);color:var(--gold);font-size:9px;letter-spacing:1px">SUB</div>
+      <div class="step-body">
+        <div class="step-label" style="color:var(--gold)">${label}</div>
+        <div class="step-result" style="color:${color||'var(--gold)'};font-size:17px;border-top-color:rgba(232,184,75,0.2)">${value}</div>
+      </div>
+    </div>`;
+}
+
+// ─────────────────────────────────────────────────────────
+// RENDER
+// ─────────────────────────────────────────────────────────
+function renderAll() {
+  const sc      = getActiveSC();
+  const r       = calcAll(sc);
+  const months  = g('g_months');
+  const taxRate = g('g_taxRate');
+
+  // Broker banner
+  document.getElementById('broker-gci').textContent = usd(r.combGross) + ' / ' + months + 'm';
+  const annGCI = r.combGross * (12 / months);
+  const above  = annGCI >= 1000000;
+  const tramoEl = document.getElementById('broker-tramo');
+  tramoEl.textContent = above ? '🟢 Tramo 2 — 90/10' : '🟡 Tramo 1 — $500/tx';
+  tramoEl.style.color = above ? 'var(--green)' : 'var(--gold)';
+
+  // Budget pill
+  document.getElementById('budget-pill').innerHTML = `
+    <span style="color:var(--muted);font-size:10px">Ads budget:</span>
+    <span style="color:var(--gold);font-weight:500">${usd(sc.budget)}/mes</span>
+    <span style="color:var(--faint)">×</span><span>${months} meses</span>
+    <span style="color:var(--faint)">=</span>
+    <span style="color:var(--green);font-weight:500">${usd(r.annBudget)} total</span>
+    <span style="color:var(--faint)">·</span>
+    ${PLATFORMS.map(p=>`<span style="color:${p.color};font-size:10px">${p.label.split('/')[0].trim()} ${splits[p.id]}%</span>`).join('<span style="color:var(--faint);margin:0 3px">·</span>')}
+  `;
+
+  // Platform budget banner
+  document.getElementById('platform-budget-banner').innerHTML = `
+    <span style="color:var(--muted);font-size:10px">Total ads período:</span>
+    <span style="color:var(--gold)">${usd(sc.budget)}/mes × ${months}m = ${usd(r.annBudget)}</span>
+    <span style="color:var(--faint)">·</span>
+    <span style="color:var(--dim);font-size:10px">CR: ${r.adCRSales}% ventas / ${r.adCRRent}% rentas (igual en todas las plataformas)</span>
+  `;
+
+  // Split warning
+  const splitTotal = Object.values(splits).reduce((a,b)=>a+b,0);
+  document.getElementById('split-warning').style.display = splitTotal !== 100 ? 'block' : 'none';
+
+  // ══════════════════════════════════════════════
+  // MATH STEPS
+  // ══════════════════════════════════════════════
+  let html = '';
+
+  // ── CANAL ORGÁNICO (WOM + PODCAST MERGED) ──
+  html += channelStrip('var(--green)', 'rgba(0,229,160,0.06)', 'rgba(0,229,160,0.2)', '🌱', 'CANAL ORGÁNICO — WOM + Podcast &amp; Contenido · Costo adquisición $0');
+
+  html += stepCard('O1',
+    'Cierres orgánicos — Ventas (WOM)',
+    `${g('w_sales')} ventas/año × ${months}/12 meses`,
+    fmt(r.wSalesCl, 1) + ' ventas',
+    `Leads implícitos: ${fmt(r.wLeadsSales,1)} (${fmt(r.wSalesCl,1)} closings ÷ ${g('w_cr')}% CR) · Comisión: ${usd(r.wGrossSales)}`,
+    'var(--green)');
+
+  html += stepCard('O2',
+    'Cierres orgánicos — Rentas (WOM)',
+    `${g('w_rents')} rentas/año × ${months}/12 meses`,
+    fmt(r.wRentsCl, 1) + ' rentas',
+    `Leads implícitos: ${fmt(r.wLeadsRents,1)} (${fmt(r.wRentsCl,1)} closings ÷ ${g('w_cr')}% CR) · Comisión: ${usd(r.wGrossRents)}`,
+    'var(--green)');
+
+  if (r.pLeads > 0) {
+    html += stepCard('O3',
+      'Leads podcast / contenido del período',
+      `${g('p_leads')} leads/año × ${months}/12 meses`,
+      fmt(r.pLeads, 1) + ' leads',
+      `${g('p_pctSales')}% → ventas (${fmt(r.pLeadsSales,1)} leads) · ${100-g('p_pctSales')}% → rentas (${fmt(r.pLeadsRent,1)} leads)`,
+      'var(--green)');
+
+    html += stepCard('O4',
+      'Cierres podcast — Ventas',
+      `${fmt(r.pLeadsSales,1)} leads × ${g('p_crSales')}% CR`,
+      fmt(r.pSalesCl, 2) + ' ventas',
+      `Comisión: ${usd(r.pGrossSales)}`,
+      'var(--green)');
+
+    html += stepCard('O5',
+      'Cierres podcast — Rentas',
+      `${fmt(r.pLeadsRent,1)} leads × ${g('p_crRent')}% CR`,
+      fmt(r.pRentsCl, 2) + ' rentas',
+      `Comisión: ${usd(r.pGrossRents)}`,
+      'var(--green)');
+  } else {
+    html += `<div style="background:rgba(0,229,160,0.04);border:1px solid rgba(0,229,160,0.12);border-radius:10px;padding:12px 16px;margin-bottom:6px;font-size:10px;color:var(--dim);line-height:1.7">
+      🎙 Podcast: actualmente <strong style="color:var(--green)">0 leads</strong> — sube el número arriba cuando empiece a generar inbound para ver el impacto.
+    </div>`;
+  }
+
+  const orgSalesCl = r.wSalesCl + r.pSalesCl;
+  const orgRentsCl = r.wRentsCl + r.pRentsCl;
+  const orgGross   = r.wGross + r.pGross;
+
+  html += subtotalCard(
+    `Canal Orgánico — ${fmt(orgSalesCl,1)} ventas + ${fmt(orgRentsCl,1)} rentas · Gross`,
+    usd(orgGross),
+    'var(--green)');
+
+  // ── CANAL ADS ──
+  html += channelStrip('var(--blue)', 'rgba(74,144,184,0.06)', 'rgba(74,144,184,0.2)', '📡', `CANAL ADS — CR ${r.adCRSales}% ventas / ${r.adCRRent}% rentas (todas las plataformas)`);
+
+  html += stepCard('C1',
+    'Budget total de ads en el período',
+    `${usd(sc.budget)}/mes × ${months} meses`,
+    usd(r.annBudget),
+    `Distribuido: ${PLATFORMS.map(p=>`${p.label.split('/')[0].trim()} ${splits[p.id]}%`).join(' · ')}`,
+    'var(--blue)');
+
+  html += stepCard('C2',
+    'Leads generados por plataforma',
+    `Budget plataforma ÷ CPL`,
+    fmt(r.adLeads) + ' leads',
+    PLATFORMS.map(p => {
+      const bd = r.breakdown[p.id];
+      return `<span style="color:${p.color}">${p.label.split('/')[0].trim()}: ${usd(bd.budget)} ÷ $${cpls[p.id]} = ${fmt(bd.leads)} leads</span>`;
+    }).join(' &nbsp;·&nbsp; '),
+    'var(--blue)');
+
+  html += stepCard('C3',
+    'CPL promedio ponderado',
+    `${usd(r.annBudget)} ÷ ${fmt(r.adLeads)} leads`,
+    r.avgCPL > 0 ? usd(r.avgCPL) : '—',
+    `Costo por cierre (ad spend ÷ cierres ads): ${r.adCPLClose > 0 ? usd(r.adCPLClose) : '—'}`,
+    'var(--blue)');
+
+  html += stepCard('C4',
+    'Cierres ads — Ventas',
+    `${fmt(r.adLeads * (sc.pctSales||40)/100, 1)} leads ventas × ${r.adCRSales}% CR`,
+    fmt(r.adSalesCl, 2) + ' ventas',
+    PLATFORMS.map(p => {
+      const bd = r.breakdown[p.id];
+      return `<span style="color:${p.color}">${p.label.split('/')[0].trim()}: ${fmt(bd.leads*(sc.pctSales||40)/100,1)} leads → ${fmt(bd.sales,2)} ventas</span>`;
+    }).join('<br>'),
+    'var(--text)');
+
+  html += stepCard('C5',
+    'Cierres ads — Rentas',
+    `${fmt(r.adLeads * (1-(sc.pctSales||40)/100), 1)} leads rentas × ${r.adCRRent}% CR`,
+    fmt(r.adRentsCl, 2) + ' rentas',
+    PLATFORMS.map(p => {
+      const bd = r.breakdown[p.id];
+      return `<span style="color:${p.color}">${p.label.split('/')[0].trim()}: ${fmt(bd.leads*(1-(sc.pctSales||40)/100),1)} leads → ${fmt(bd.rents,2)} rentas</span>`;
+    }).join('<br>'),
+    'var(--text)');
+
+  html += subtotalCard(
+    `Canal C — Gross comisión Ads · broker: ${r.adBroker.label}`,
+    usd(r.adGross),
+    'var(--blue)');
+
+  // ── COMBINED ──
+  html += channelStrip('var(--gold)', 'rgba(232,184,75,0.06)', 'rgba(232,184,75,0.2)', '💰', 'COMBINADO — Orgánico + Ads');
+
+  if (r.capWarn) {
+    html += `<div class="warn-card">⚠️ Cap de capacidad aplicado. Sin cap: ${fmt(r.rawTotSales,1)} ventas + ${fmt(r.rawTotRents,1)} rentas. Límite agente solo: ${AGENT_CAPACITY.maxSales}v + ${AGENT_CAPACITY.maxRents}r/año. Con este volumen necesitas un asistente o equipo.</div>`;
+  }
+
+  html += stepCard('D1',
+    'Cierres TOTALES del período',
+    `WOM (${fmt(r.wSalesCl,1)}v+${fmt(r.wRentsCl,1)}r) + Pod (${fmt(r.pSalesCl,1)}v+${fmt(r.pRentsCl,1)}r) + Ads (${fmt(r.adSalesCl,1)}v+${fmt(r.adRentsCl,1)}r)${r.capWarn?' — cap aplicado':''}`,
+    `${fmt(r.totSales,1)}v + ${fmt(r.totRents,1)}r`,
+    `Total: ${fmt(r.totalClosings,1)} transacciones en ${months} meses`,
+    'var(--text)', r.capWarn);
+
+  html += stepCard('D2',
+    'Gross comisión combinada',
+    `${fmt(r.totSales,1)} ventas × ${usd(g('g_salePrice'))} × ${g('g_commPct')}% + ${fmt(r.totRents,1)} rentas × ${usd(g('g_rentPrice'))}`,
+    usd(r.combGross),
+    '',
+    'var(--gold)');
+
+  html += stepCard('D3',
+    'Fee del Broker (sobre total combinado)',
+    r.combBroker.label,
+    `− ${usd(r.combBroker.fee)}`,
+    `GCI ${usd(r.combGross)} → ${annGCI >= 1000000 ? '🟢 Tramo 90/10' : '🟡 Tramo $500/tx · faltan ' + usd(1000000 - r.combGross) + ' para el 90/10'}`,
+    'var(--red)');
+
+  html += stepCard('D4',
+    'Net comisión agente',
+    `Gross − Broker fee`,
+    usd(r.combBroker.net),
+    `${fmt(r.combBroker.effPct,1)}% efectivo retenido`,
+    'var(--gold)');
+
+  // ── EXPENSES ──
+  html += channelStrip('var(--red)', 'rgba(255,85,102,0.06)', 'rgba(255,85,102,0.2)', '📤', 'GASTOS (solo canal C — WOM y Podcast no tienen costo pagado)');
+
+  html += stepCard('E1',
+    'Ad spend',
+    `${usd(sc.budget)}/mes × ${months} meses`,
+    `− ${usd(r.annBudget)}`,
+    '',
+    'var(--red)');
+
+  html += stepCard('E2',
+    'CRM & Herramientas',
+    `${usd(sc.crm)}/mes × ${months} meses`,
+    `− ${usd(r.annCRM)}`,
+    sc.crm === 0 ? 'Sin CRM en este escenario' : 'Follow Up Boss, KVCore, etc.',
+    'var(--red)');
+
+  html += stepCard('E3',
+    'Otros gastos operativos',
+    `${usd(sc.other)}/mes × ${months} meses`,
+    `− ${usd(r.annOther)}`,
+    'MLS, E&O, marketing creativo, misc.',
+    'var(--red)');
+
+  html += stepCard('E4',
+    'Total gastos',
+    `Ads + CRM + Otros`,
+    `− ${usd(r.totalExp)}`,
+    '',
+    'var(--red)');
+
+  // ── PROFIT ──
+  html += channelStrip('var(--green)', 'rgba(0,229,160,0.06)', 'rgba(0,229,160,0.2)', '📊', 'RESULTADO FINAL');
+
+  html += stepCard('F1',
+    'Pre-Tax Profit',
+    `Net comisión − Total gastos = ${usd(r.combBroker.net)} − ${usd(r.totalExp)}`,
+    usd(r.preProfit),
+    '',
+    r.preProfit >= 0 ? 'var(--gold)' : 'var(--red)');
+
+  html += stepCard('F2',
+    `Impuestos Self-Employed (~${taxRate}%)`,
+    `Pre-tax × ${taxRate}% (federal + SE tax 15.3%)`,
+    `− ${usd(r.taxes)}`,
+    '',
+    'var(--orange)');
+
+  html += stepCard('F3',
+    'NET PROFIT post-tax',
+    `Pre-tax − Impuestos`,
+    usd(r.netProfit),
+    '',
+    r.netProfit >= 0 ? 'var(--green)' : 'var(--red)');
+
+  html += stepCard('F4',
+    'ROI sobre inversión en ads+tools',
+    `(Net comisión − Gastos) ÷ Gastos × 100`,
+    pct(r.roi, 0),
+    `Por cada $1 invertido en ads → $${(1 + r.roi/100).toFixed(2)} recuperado`,
+    roiColor(r.roi));
+
+  document.getElementById('math-steps').innerHTML = html;
+
+  // ══════════════════════════════════════════════
+  // BREAKEVEN CARD
+  // ══════════════════════════════════════════════
+  const beEl = document.getElementById('breakeven-card');
+  if (beEl) {
+    const grossCovers = r.adGross >= r.grossNeeded;
+    const profitable  = grossCovers && r.adGross > 0;
+    const beColor    = profitable ? 'var(--green)' : 'var(--orange)';
+    const beBg       = profitable ? 'rgba(0,229,160,0.06)' : 'rgba(255,153,68,0.06)';
+    const beBorder   = profitable ? 'rgba(0,229,160,0.2)' : 'rgba(255,153,68,0.25)';
+    const crNeedStr     = r.crNeededBlended < Infinity ? fmt(r.crNeededBlended, 2) + '%' : '—';
+    const closesNeedStr = r.closesNeeded < Infinity ? fmt(r.closesNeeded, 1) : '—';
+    const crOk          = r.adBlendedCR >= r.crNeededBlended;
+
+    beEl.innerHTML = `
+      <div style="background:${beBg};border:1px solid ${beBorder};border-radius:14px;padding:18px 24px">
+        <div style="font-size:10px;letter-spacing:2px;color:${beColor};text-transform:uppercase;margin-bottom:14px;font-weight:500">
+          📐 Análisis de Punto de Equilibrio — Ads
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px">
+          <div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:5px">Gasto total ads + tools</div>
+            <div style="font-size:20px;color:var(--red);font-weight:500">${usd(r.totalExp)}</div>
+            <div style="font-size:11px;color:var(--dim);margin-top:4px">Costo que los ads deben recuperar</div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:5px">Gross mínimo necesario</div>
+            <div style="font-size:20px;color:var(--orange);font-weight:500">${r.grossNeeded < Infinity ? usd(r.grossNeeded) : '—'}</div>
+            <div style="font-size:11px;color:var(--dim);margin-top:4px">Después de broker e impuestos</div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:5px">Cierres mínimos necesarios</div>
+            <div style="font-size:20px;color:var(--orange);font-weight:500">${closesNeedStr}</div>
+            <div style="font-size:11px;color:var(--dim);margin-top:4px">Con valor blended ${usd(r.avgCloseVal)} por cierre</div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:5px">CR blended mínimo</div>
+            <div style="font-size:20px;color:${crOk ? 'var(--green)' : 'var(--orange)'};font-weight:500">${crNeedStr}</div>
+            <div style="font-size:11px;color:var(--dim);margin-top:4px">CR actual blended: ${fmt(r.adBlendedCR, 2)}% ${crOk ? '✓ supera el umbral' : '✗ bajo el umbral'}</div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:5px">Gross actual de ads</div>
+            <div style="font-size:20px;color:${beColor};font-weight:500">${usd(r.adGross)}</div>
+            <div style="font-size:11px;color:var(--dim);margin-top:4px">${grossCovers ? '✓ cubre el costo' : `Faltan ${usd(Math.max(0, r.grossNeeded - r.adGross))}`}</div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:5px">Veredicto</div>
+            <div style="font-size:16px;color:${beColor};font-weight:500;margin-top:4px">${profitable ? '✅ Ads rentables' : '❌ Ads no se pagan solos'}</div>
+            <div style="font-size:11px;color:var(--dim);margin-top:4px">${profitable ? `ROI ads: ${fmt(r.roi,0)}%` : `Necesitas CR ≥ ${crNeedStr}`}</div>
+          </div>
+        </div>
+        <div style="margin-top:14px;padding-top:12px;border-top:1px solid ${beBorder};font-size:11px;color:var(--dim);line-height:1.7">
+          <strong style="color:var(--muted)">Nota:</strong> "CR blended" pondera ventas y rentas según el % de leads que busca comprar.
+          Fórmula: ${fmt(r.sc.pctSales||40, 0)}% × CR ventas + ${100-(r.sc.pctSales||40)}% × CR rentas.
+          El gross mínimo asume que el broker fee promedio se mantiene en ${fmt(r.combBroker.effPct, 1)}% efectivo retenido.
+        </div>
+      </div>`;
+  }
+
+  // ══════════════════════════════════════════════
+  // KPI STRIP
+  // ══════════════════════════════════════════════
+  const kpis = [
+    { label:'Leads WOM implícitos', val:`${fmt(r.wLeadsSales+r.wLeadsRents,1)}`, sub:`CR ${g('w_cr')}% · costo adquisición $0`, color:'var(--green)' },
+    { label:'Leads Podcast / Orgánico', val:fmt(r.pLeads,1), sub:`CR ${g('p_crSales')}% ventas / ${g('p_crRent')}% rentas`, color:'var(--teal)' },
+    { label:'Leads Ads pagados', val:fmt(r.adLeads), sub:`${months}m · ${PLATFORMS.length} plataformas`, color:'var(--blue)' },
+    { label:'CPL promedio (ads)', val:r.avgCPL>0?usd(r.avgCPL):'—', sub:`Costo por cierre ads: ${r.adCPLClose>0?usd(r.adCPLClose):'—'}`, color:'var(--blue)' },
+    { label:'Cierres Orgánico (WOM+Pod)', val:`${fmt(r.wSalesCl+r.pSalesCl,1)}v + ${fmt(r.wRentsCl+r.pRentsCl,1)}r`, sub:`Gross: ${usd(r.wGross+r.pGross)}`, color:'var(--green)' },
+    { label:'Cierres Ads', val:`${fmt(r.adSalesCl,1)}v + ${fmt(r.adRentsCl,1)}r`, sub:`Gross: ${usd(r.adGross)}`, color:'var(--blue)' },
+    { label:'Gross total combinado', val:usd(r.combGross), sub:`Net c/broker (${fmt(r.combBroker.effPct,1)}%): ${usd(r.combBroker.net)}`, color:'var(--gold)' },
+    { label:'Total gastos', val:usd(r.totalExp), sub:`Ads + CRM + Otros · Orgánico = $0`, color:'var(--red)' },
+    { label:'NET PROFIT post-tax', val:usd(r.netProfit), sub:`Pre-tax: ${usd(r.preProfit)} · Tax: ${usd(r.taxes)}`, color:r.netProfit>=0?'var(--green)':'var(--red)' },
+    { label:'ROI sobre ads+tools', val:pct(r.roi,0), sub:`Por $1 invertido → $${(1+r.roi/100).toFixed(2)}`, color:roiColor(r.roi) },
+  ];
+  document.getElementById('kpi-strip').innerHTML = kpis.map(k=>`
+    <div class="kpi">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-val" style="color:${k.color}">${k.val}</div>
+      <div class="kpi-sub">${k.sub}</div>
+    </div>`).join('');
+
+  // ══════════════════════════════════════════════
+  // PLATFORMS
+  // ══════════════════════════════════════════════
+  const maxLeads = Math.max(...PLATFORMS.map(p=>r.breakdown[p.id]?.leads||0), 1);
+  document.getElementById('platform-blocks').innerHTML = PLATFORMS.map(p => {
+    const bd       = r.breakdown[p.id];
+    const pctS     = sc.pctSales || 40;
+    const lSales   = bd.leads * (pctS / 100);
+    const lRents   = bd.leads * (1 - pctS / 100);
+    return `
+      <div class="platform-block">
+        <div class="platform-header">
+          <span style="color:${p.color};font-weight:500;font-size:14px">${p.label}</span>
+          <span style="color:var(--muted);font-size:10px">${splits[p.id]}% del budget = ${usd(bd.budget)} ÷ $${cpls[p.id]} CPL = ${fmt(bd.leads)} leads</span>
+        </div>
+        <div class="platform-math">
+          Ventas: ${fmt(lSales,1)} leads × ${r.adCRSales}% CR = <strong style="color:var(--text)">${fmt(bd.sales,2)} cierres</strong>
+          &nbsp;·&nbsp;
+          Rentas: ${fmt(lRents,1)} leads × ${r.adCRRent}% CR = <strong style="color:var(--text)">${fmt(bd.rents,2)} cierres</strong>
+        </div>
+        <div class="slider-row">
+          <label>% del budget</label>
+          <input type="range" min="0" max="80" step="5" value="${splits[p.id]}"
+            oninput="splits['${p.id}']=parseInt(this.value);this.style.setProperty('--v',((this.value-this.min)/(this.max-this.min)*100)+'%');renderAll()"
+            style="accent-color:${p.color};--v:${((splits[p.id]-0)/(80-0)*100).toFixed(1)}%;--c:${p.color}">
+          <span class="slider-val" style="color:${p.color}">${splits[p.id]}%</span>
+        </div>
+        <div class="slider-row">
+          <label>CPL estimado Miami</label>
+          <input type="range" min="5" max="150" step="1" value="${cpls[p.id]}"
+            oninput="cpls['${p.id}']=parseInt(this.value);this.style.setProperty('--v',((this.value-this.min)/(this.max-this.min)*100)+'%');renderAll()"
+            style="accent-color:${p.color};--v:${((cpls[p.id]-5)/(150-5)*100).toFixed(1)}%;--c:${p.color}">
+          <span class="slider-val" style="color:${p.color}">$${cpls[p.id]}</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill" style="width:${Math.round(bd.leads/maxLeads*100)}%;background:${p.color}"></div></div>
+        <div class="p-hint">${p.hint}</div>
+      </div>`;
+  }).join('');
+
+  // ══════════════════════════════════════════════
+  // COMPARE TABLE
+  // ══════════════════════════════════════════════
+  const wom_gross = r.wGross;
+  const pod_gross = r.pGross;
+
+  // TRUE baseline: WOM + Podcast only, NO ads, NO ad expenses
+  const baselineSC = { budget:0, crSales:0, crRent:0, pctSales:40, crm:0, other:0 };
+  const baseline   = calcAll(baselineSC);
+
+  const allSCs = Object.entries(SCENARIOS).map(([id, scDef]) => {
+    const live = id === 'custom' ? getActiveSC() : scDef;
+    const rr   = calcAll(live);
+    return { id, scDef, rr };
+  });
+
+  document.getElementById('compare-table').innerHTML = `
+    <thead><tr>
+      <th>Escenario ads</th><th>Budget/mes</th><th>CR ads</th><th>Leads</th>
+      <th>CPL avg</th><th>Cierres ads</th><th>Gross ads</th>
+      <th>Net total post-tax</th><th>Uplift vs sin ads</th><th>ROI ads</th><th>Breakeven</th>
+    </tr></thead>
+    <tbody>
+      <tr style="background:rgba(0,229,160,0.04)">
+        <td style="color:var(--green)">📍 Sin Ads (WOM+Pod solo)</td>
+        <td style="color:var(--dim)">$0</td>
+        <td style="color:var(--dim)">—</td>
+        <td style="color:var(--dim)">—</td>
+        <td style="color:var(--dim)">—</td>
+        <td style="color:var(--dim)">—</td>
+        <td style="color:var(--gold)">${usd(baseline.combGross)}</td>
+        <td style="color:var(--green);font-weight:500">${usd(baseline.netProfit)}</td>
+        <td style="color:var(--dim)">— (referencia)</td>
+        <td style="color:var(--dim)">—</td>
+        <td style="color:var(--green)">✓ sin costo</td>
+      </tr>
+      ${allSCs.map(({id, scDef, rr}) => {
+        const beOk    = rr.beOk;
+        const beStr   = rr.closesNeeded < Infinity
+          ? (beOk ? `✓ ${fmt(rr.adSalesCl+rr.adRentsCl,1)} cierres` : `${fmt(rr.closesNeeded,1)} mínimo`)
+          : '—';
+        const uplift  = rr.netProfit - baseline.netProfit;
+        const upColor = uplift >= 0 ? 'var(--green)' : 'var(--red)';
+        const upSign  = uplift >= 0 ? '+' : '';
+        return `
+        <tr class="${id===activeScenario?'active-row':''}" onclick="switchScenario('${id}')">
+          <td style="color:${id===activeScenario?'var(--text)':'var(--muted)'}">${scDef.emoji} ${scDef.label}</td>
+          <td>${usd(id==='custom'?getActiveSC().budget:scDef.budget)}</td>
+          <td>${pct(rr.adCRSales,1)}v / ${pct(rr.adCRRent,1)}r</td>
+          <td>${fmt(rr.adLeads)}</td>
+          <td>${rr.avgCPL>0?usd(rr.avgCPL):'—'}</td>
+          <td>${fmt(rr.adSalesCl,1)}v + ${fmt(rr.adRentsCl,1)}r</td>
+          <td style="color:var(--gold)">${usd(rr.adGross)}</td>
+          <td style="color:${rr.netProfit>0?'var(--green)':'var(--red)'};font-weight:500">${usd(rr.netProfit)}</td>
+          <td style="color:${upColor};font-weight:500">${upSign}${usd(uplift)}</td>
+          <td style="color:${roiColor(rr.roi)};font-weight:500">${pct(rr.roi,0)}</td>
+          <td style="color:${beOk?'var(--green)':'var(--orange)'};font-size:11px">${beStr}</td>
+        </tr>`;
+      }).join('')}
+    </tbody>`;
+  // ══════════════════════════════════════════════
+  // SIMPLE BREAKDOWN — 3 full-width cards
+  // ══════════════════════════════════════════════
+  function bdRow(k, v, color, bold) {
+    return `<div class="bd-row">
+      <span class="bd-k"${bold ? ' style="color:var(--text);font-weight:500"' : ''}>${k}</span>
+      <span class="bd-v" style="color:${color}">${v}</span>
+    </div>`;
+  }
+  function bdSep() { return `<div style="height:6px;border-bottom:1px solid var(--border);margin-bottom:6px"></div>`; }
+
+  const grossSalesVal = r.totSales * g('g_salePrice') * (g('g_commPct') / 100);
+  const grossRentsVal = r.totRents * g('g_rentPrice');
+
+  // ── INGRESOS ──
+  document.getElementById('breakdown-income').innerHTML = `
+    <div class="bd-title" style="color:var(--green)">📥 Ingresos</div>
+
+    <div style="font-size:9px;letter-spacing:2px;color:var(--green);text-transform:uppercase;margin-bottom:6px">🌱 Canal Orgánico — WOM + Podcast</div>
+    ${bdRow('Cierres ventas WOM', fmt(r.wSalesCl, 1), 'var(--green)')}
+    ${bdRow('Cierres rentas WOM', fmt(r.wRentsCl, 1), 'var(--green)')}
+    ${r.pLeads > 0 ? bdRow('Cierres ventas podcast', fmt(r.pSalesCl, 2), 'var(--green)') : ''}
+    ${r.pLeads > 0 ? bdRow('Cierres rentas podcast', fmt(r.pRentsCl, 2), 'var(--green)') : ''}
+    ${bdRow('Leads implícitos orgánico', fmt(r.wLeadsSales + r.wLeadsRents + r.pLeads, 1), 'var(--dim)')}
+    ${bdSep()}
+
+    <div style="font-size:9px;letter-spacing:2px;color:var(--blue);text-transform:uppercase;margin-bottom:6px">📡 Canal C — Ads Pagados</div>
+    ${bdRow('Leads generados por ads', fmt(r.adLeads), 'var(--blue)')}
+    ${bdRow('Cierres ventas ads (CR ' + r.adCRSales + '%)', fmt(r.adSalesCl, 2), 'var(--blue)')}
+    ${bdRow('Cierres rentas ads (CR ' + r.adCRRent + '%)', fmt(r.adRentsCl, 2), 'var(--blue)')}
+    ${bdSep()}
+
+    <div style="font-size:9px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:6px">💰 Totales</div>
+    ${bdRow('Total ventas cerradas (A+B+C)', fmt(r.totSales, 1) + (r.capWarn ? ' ⚠ cap' : ''), 'var(--text)', true)}
+    ${bdRow('Total rentas cerradas (A+B+C)', fmt(r.totRents, 1) + (r.capWarn ? ' ⚠ cap' : ''), 'var(--text)', true)}
+    ${bdSep()}
+    ${bdRow('Comisión ventas (' + g('g_commPct') + '% de ' + usd(g('g_salePrice')) + ')', usd(grossSalesVal), 'var(--gold)')}
+    ${bdRow('Comisión rentas (1 mes × ' + fmt(r.totRents,1) + ')', usd(grossRentsVal), 'var(--gold)')}
+    ${bdRow('Gross comisión total', usd(r.combGross), 'var(--gold)', true)}
+    ${bdSep()}
+    ${bdRow('Fee broker (' + r.combBroker.label + ')', '− ' + usd(r.combBroker.fee), 'var(--red)')}
+    ${bdRow('Net comisión agente (' + fmt(r.combBroker.effPct, 1) + '% efectivo)', usd(r.combBroker.net), 'var(--green)', true)}
+  `;
+
+  // ── GASTOS ──
+  document.getElementById('breakdown-expenses').innerHTML = `
+    <div class="bd-title" style="color:var(--red)">📤 Gastos</div>
+    ${bdRow('Ad spend (' + usd(sc.budget) + '/mes × ' + months + ' meses)', '− ' + usd(r.annBudget), 'var(--red)')}
+    ${bdRow('CRM / herramientas (' + usd(sc.crm) + '/mes)', '− ' + usd(r.annCRM), 'var(--red)')}
+    ${bdRow('Otros gastos operativos (' + usd(sc.other) + '/mes)', '− ' + usd(r.annOther), 'var(--red)')}
+    ${bdRow('WOM + Podcast — costo de adquisición', '$0', 'var(--green)')}
+    ${bdRow('Total gastos', '− ' + usd(r.totalExp), 'var(--red)', true)}
+    ${bdSep()}
+    ${bdRow('CPL promedio (ads)', r.avgCPL > 0 ? usd(r.avgCPL) : '—', 'var(--blue)')}
+    ${bdRow('Costo por cierre (ad spend ÷ cierres ads)', r.adCPLClose > 0 ? usd(r.adCPLClose) : '—', 'var(--blue)')}
+  `;
+
+  // ── RESULTADO ──
+  document.getElementById('breakdown-result').innerHTML = `
+    <div class="bd-title" style="color:var(--gold)">📊 Resultado</div>
+    ${bdRow('Net comisión agente', usd(r.combBroker.net), 'var(--gold)')}
+    ${bdRow('Total gastos', '− ' + usd(r.totalExp), 'var(--red)')}
+    ${bdRow('Pre-Tax Profit', usd(r.preProfit), r.preProfit >= 0 ? 'var(--gold)' : 'var(--red)', true)}
+    ${bdSep()}
+    ${bdRow('Impuestos self-employed (~' + taxRate + '%)', '− ' + usd(r.taxes), 'var(--orange)')}
+    ${bdRow('NET PROFIT post-tax', usd(r.netProfit), r.netProfit >= 0 ? 'var(--green)' : 'var(--red)', true)}
+    ${bdSep()}
+    ${bdRow('ROI sobre ads + tools', pct(r.roi, 1), roiColor(r.roi), true)}
+    ${bdRow('Por cada $1 invertido en ads', '→ $' + (1 + r.roi / 100).toFixed(2), roiColor(r.roi))}
+  `;
+}
+
+// ─────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────
+function switchScenario(id) {
+  activeScenario = id;
+  document.querySelectorAll('.sc-btn').forEach(b => b.classList.toggle('active', b.dataset.sc === id));
+  document.getElementById('custom-panel').classList.toggle('visible', id === 'custom');
+  renderAll();
+}
+
+document.querySelectorAll('.sc-btn').forEach(b => b.addEventListener('click', () => switchScenario(b.dataset.sc)));
+
+document.addEventListener('input', e => {
+  if ((e.target.id || '').match(/^(g_|w_|p_|c_)/)) renderAll();
+});
+
+renderAll();
+</script>
+</body>
+</html>
