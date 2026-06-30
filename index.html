@@ -159,8 +159,8 @@
   @media(max-width:680px){.grid.three{grid-template-columns:1fr;}}
 
   .card{
-    position:relative;background:var(--panel-2);padding:26px 28px 24px;
-    display:flex;flex-direction:column;min-height:208px;
+    position:relative;background:var(--panel-2);padding:22px 26px 20px;
+    display:flex;flex-direction:column;min-height:176px;
     transition:background .25s,transform .25s;
   }
   .card:hover{background:var(--panel-3);}
@@ -170,16 +170,16 @@
   .status::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--muted);}
   .status.live::before,.status.shipped::before{background:var(--amber);box-shadow:0 0 0 3px rgba(200,146,58,.18);}
   .status.build::before{background:#5b86c9;}
-  .card h3{font-size:clamp(22px,2.6vw,30px);font-weight:800;letter-spacing:-.02em;margin:20px 0 0;}
-  .card p{color:var(--muted);margin:12px 0 0;font-size:15.5px;line-height:1.55;}
+  .card h3{font-size:clamp(22px,2.6vw,30px);font-weight:800;letter-spacing:-.02em;margin:15px 0 0;}
+  .card p{color:var(--muted);margin:10px 0 0;font-size:15.5px;line-height:1.5;}
 
-  .meta{margin-top:22px;border-top:1px solid var(--line-soft);padding-top:16px;display:grid;gap:8px;}
+  .meta{margin-top:16px;border-top:1px solid var(--line-soft);padding-top:13px;display:grid;gap:7px;}
   .meta .row{display:grid;grid-template-columns:64px 1fr;gap:14px;align-items:baseline;}
   .meta .row .mk{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);}
   .meta .row .mv{font-size:13.5px;color:var(--paper);}
 
   .card .open{
-    margin-top:20px;align-self:flex-start;font-family:"IBM Plex Mono",monospace;
+    margin-top:16px;align-self:flex-start;font-family:"IBM Plex Mono",monospace;
     font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--paper);
     border:1px solid var(--line);padding:9px 16px;cursor:pointer;background:transparent;
     transition:border-color .2s,color .2s,background .2s;display:inline-flex;align-items:center;gap:8px;
@@ -205,6 +205,9 @@
   .cap .mono{display:block;margin-bottom:14px;color:var(--amber);}
   .cap-list{display:flex;flex-wrap:wrap;gap:10px;}
   .cap-list span{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--muted);border:1px solid var(--line-soft);padding:7px 12px;letter-spacing:.04em;}
+
+  .lang{display:flex;align-items:center;gap:clamp(14px,3vw,28px);flex-wrap:wrap;}
+  .lang .mono{color:var(--amber);}
 
   /* ============================================================
      BACKGROUND / ENGINEERING RECORD
@@ -351,9 +354,7 @@
         <div class="meta">
           <div class="row"><span class="mk">Stack</span><span class="mv">Next.js · React Native · Supabase · RAG</span></div>
           <div class="row"><span class="mk">Role</span><span class="mv">Founder &amp; engineer</span></div>
-        </div>
-        <button class="open" disabled>View <span class="arr">→</span></button>
-      </article>
+        </div>      </article>
 
       <article class="card reveal" data-demo="" data-title="Papelito">
         <div class="tag-row"><span class="sheet-no">PAP-01</span><span class="status build">In build</span></div>
@@ -362,30 +363,22 @@
         <div class="meta">
           <div class="row"><span class="mk">Stack</span><span class="mv">React Native · Expo · Zustand · RevenueCat</span></div>
           <div class="row"><span class="mk">Role</span><span class="mv">Solo build</span></div>
-        </div>
-        <button class="open" disabled>View <span class="arr">→</span></button>
-      </article>
+        </div>      </article>
 
       <article class="card reveal" data-demo="" data-title="Museumly">
         <div class="tag-row"><span class="sheet-no">MSM-01</span><span class="status">Concept</span></div>
         <h3>Museumly</h3>
-        <p>A discovery and companion app for museums and exhibits. <em>— short description, confirm with me.</em></p>
-        <button class="open" disabled>View <span class="arr">→</span></button>
-      </article>
+        <p>A discovery and companion app for museums and exhibits. <em>— short description, confirm with me.</em></p>      </article>
 
       <article class="card reveal" data-demo="" data-title="Local AI Assistant">
         <div class="tag-row"><span class="sheet-no">AI-01</span><span class="status live">Running</span></div>
         <h3>Local AI Assistant</h3>
-        <p>A self-hosted assistant on a local Qwen model, wired to Telegram — private AI that runs entirely on my own hardware.</p>
-        <button class="open" disabled>View <span class="arr">→</span></button>
-      </article>
+        <p>A self-hosted assistant on a local Qwen model, wired to Telegram — private AI that runs entirely on my own hardware.</p>      </article>
 
       <article class="card reveal" data-demo="" data-title="3D Tile Match">
         <div class="tag-row"><span class="sheet-no">GME-01</span><span class="status build">In build</span></div>
         <h3>3D Tile Match</h3>
-        <p>A 3D tile-matching puzzle game. <em>— short description, confirm with me.</em></p>
-        <button class="open" disabled>View <span class="arr">→</span></button>
-      </article>
+        <p>A 3D tile-matching puzzle game. <em>— short description, confirm with me.</em></p>      </article>
 
     </div>
   </div>
@@ -456,7 +449,7 @@
         <div class="fact"><div class="fk">Education</div><div class="fv">B.S. Mechanical Engineering — Florida International University, 2022</div></div>
         <div class="fact"><div class="fk">Roles</div><div class="fv">Project Manager &amp; AI / Improvement Engineer — Tropic Mechanical Contractors</div></div>
         <div class="fact"><div class="fk">Impact</div><div class="fv">~80% faster document retrieval · ~30% less overtime · est. $200K/yr in errors avoided</div></div>
-        <div class="fact"><div class="fk">Certs</div><div class="fv">Microsoft Copilot Studio · Azure AI Engineer Associate — in progress · <a href="https://www.credly.com/users/ricardo-guercioni" target="_blank" rel="noopener" style="color:var(--amber);">Credly ↗</a></div></div>
+        <div class="fact"><div class="fk">Certs</div><div class="fv">Azure AI Engineer Associate — in progress · <a href="https://www.credly.com/users/ricardo-guercioni" target="_blank" rel="noopener" style="color:var(--amber);">Credly ↗</a></div></div>
       </div>
     </div>
   </div>
@@ -470,7 +463,7 @@
         <span class="eyebrow">Sheet 04 · Platforms</span>
         <h2>Other skills</h2>
       </div>
-      <span class="count">PLATFORMS — 09</span>
+      <span class="count">PLATFORMS — 10</span>
     </div>
 
     <div class="builds">
@@ -519,6 +512,25 @@
         <div><div class="bt">Google Analytics</div><div class="bd">GA4 setup, event &amp; conversion tracking, and dashboards — turning site and product activity into reporting that drives decisions.</div></div>
         <div class="bs">GA4 · Tracking · Dashboards</div>
       </div>
+      <div class="build reveal">
+        <span class="bno">S-10</span>
+        <div><div class="bt">Jira</div><div class="bd">Agile project and issue tracking — boards, sprints, and workflows that keep delivery organized and visible.</div></div>
+        <div class="bs">Agile · Boards · Tracking</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== LANGUAGES ============================== -->
+<section id="languages" style="padding:clamp(26px,4vw,44px) 0;border-top:1px solid var(--line-soft);">
+  <div class="wrap">
+    <div class="lang reveal">
+      <span class="mono">Languages</span>
+      <div class="cap-list">
+        <span>Spanish — Native</span>
+        <span>English — Fluent</span>
+        <span>Portuguese — Intermediate</span>
+      </div>
     </div>
   </div>
 </section>
@@ -532,6 +544,7 @@
       <a href="mailto:ricardoguercioni@gmail.com"><span class="lk">↳</span> ricardoguercioni@gmail.com</a>
       <a href="https://www.linkedin.com/in/ricardo-guercioni" target="_blank" rel="noopener"><span class="lk">↳</span> LinkedIn</a>
       <a href="https://github.com/gnc-devs" target="_blank" rel="noopener"><span class="lk">↳</span> GitHub</a>
+      <a href="https://www.credly.com/users/ricardo-guercioni" target="_blank" rel="noopener"><span class="lk">↳</span> Credly</a>
       <a href="https://gncaiconsulting.com" target="_blank" rel="noopener"><span class="lk">↳</span> gncaiconsulting.com</a>
     </div>
     <div class="colophon">
