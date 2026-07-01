@@ -153,7 +153,7 @@
   /* ============================================================
      PROJECT SPEC CARDS
      ============================================================ */
-  .grid{display:grid;gap:1px;background:var(--line-soft);border:1px solid var(--line-soft);}
+  .grid{display:grid;gap:0;border-top:1px solid var(--line-soft);border-left:1px solid var(--line-soft);}
   .grid.three{grid-template-columns:repeat(3,1fr);}
   @media(max-width:900px){.grid.three{grid-template-columns:1fr 1fr;}}
   @media(max-width:680px){.grid.three{grid-template-columns:1fr;}}
@@ -161,15 +161,16 @@
   .card{
     position:relative;background:var(--panel-2);padding:22px 26px 20px;
     display:flex;flex-direction:column;min-height:176px;
+    border-right:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);
     transition:background .25s,transform .25s;
   }
   .card:hover{background:var(--panel-3);}
-  .card .tag-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:auto;}
+  .card .tag-row{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:20px;}
   .card .sheet-no{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.14em;color:var(--muted);}
-  .status{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;display:inline-flex;align-items:center;gap:7px;color:var(--muted);}
-  .status::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--muted);}
+  .status{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;display:inline-flex;align-items:center;gap:7px;color:var(--muted);}
+  .status::before{content:"";flex-shrink:0;width:7px;height:7px;border-radius:50%;background:var(--muted);}
   .status.live::before,.status.shipped::before{background:var(--amber);box-shadow:0 0 0 3px rgba(200,146,58,.18);}
-  .status.build::before{background:#5b86c9;}
+  .status.is-build::before{background:#5b86c9;}
   .card h3{font-size:clamp(22px,2.6vw,30px);font-weight:800;letter-spacing:-.02em;margin:15px 0 0;}
   .card p{color:var(--muted);margin:10px 0 0;font-size:15.5px;line-height:1.5;}
 
@@ -179,7 +180,7 @@
   .meta .row .mv{font-size:13.5px;color:var(--paper);}
 
   .card .open{
-    margin-top:16px;align-self:flex-start;font-family:"IBM Plex Mono",monospace;
+    margin-top:auto;align-self:flex-start;font-family:"IBM Plex Mono",monospace;
     font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--paper);
     border:1px solid var(--line);padding:9px 16px;cursor:pointer;background:transparent;
     transition:border-color .2s,color .2s,background .2s;display:inline-flex;align-items:center;gap:8px;
@@ -330,7 +331,7 @@
     <div class="grid three">
 
       <article class="card reveal" data-demo="" data-title="XPLife">
-        <div class="tag-row"><span class="sheet-no">XPL-01</span><span class="status build">Fighting with Apple Review</span></div>
+        <div class="tag-row"><span class="sheet-no">XPL-01</span><span class="status is-build">In App Review</span></div>
         <h3>XPLife</h3>
         <p>Real-life goals turned into an XP system — a gamified life and habit tracker that makes progress feel like leveling up.</p>
         <a class="open" href="https://testflight.apple.com/join/aNfZ5gWH" target="_blank" rel="noopener">View <span class="arr">→</span></a>
@@ -348,7 +349,7 @@
       </article>
 
       <article class="card reveal" data-demo="" data-title="Construction Management Software">
-        <div class="tag-row"><span class="sheet-no">FS-01</span><span class="status build">In build</span></div>
+        <div class="tag-row"><span class="sheet-no">FS-01</span><span class="status is-build">In build</span></div>
         <h3>Construction Management Software</h3>
         <p>A construction AI platform that reads your project documents — submittals, RFIs, change orders, daily reports — then answers questions, drafts the email, and flags what's slipping. RAG over your own OneDrive, not a generic chatbot.</p>
         <div class="meta">
@@ -357,7 +358,7 @@
         </div>      </article>
 
       <article class="card reveal" data-demo="" data-title="Papelito">
-        <div class="tag-row"><span class="sheet-no">PAP-01</span><span class="status build">In build</span></div>
+        <div class="tag-row"><span class="sheet-no">PAP-01</span><span class="status is-build">In build</span></div>
         <h3>Papelito</h3>
         <p>The classic Fishbowl / Salad Bowl party game, rebuilt for mobile. Pass-the-phone, two teams, three rounds — Describe It, Charades, One Word. No accounts, offline-first, with a one-time Pro unlock.</p>
         <div class="meta">
@@ -376,7 +377,7 @@
         <p>A self-hosted assistant on a local Qwen model, wired to Telegram — private AI that runs entirely on my own hardware.</p>      </article>
 
       <article class="card reveal" data-demo="" data-title="3D Tile Match">
-        <div class="tag-row"><span class="sheet-no">GME-01</span><span class="status build">In build</span></div>
+        <div class="tag-row"><span class="sheet-no">GME-01</span><span class="status is-build">In build</span></div>
         <h3>3D Tile Match</h3>
         <p>A 3D tile-matching puzzle game. <em>— short description, confirm with me.</em></p>      </article>
 
