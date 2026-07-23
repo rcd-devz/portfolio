@@ -157,6 +157,9 @@
   .grid.three{grid-template-columns:repeat(3,1fr);}
   @media(max-width:900px){.grid.three{grid-template-columns:1fr 1fr;}}
   @media(max-width:680px){.grid.three{grid-template-columns:1fr;}}
+  .card.lg{grid-column:1/-1;}
+  .card.lg .meta{grid-template-columns:repeat(2,minmax(220px,1fr));column-gap:28px;}
+  @media(max-width:680px){.card.lg .meta{grid-template-columns:1fr;}}
 
   .card{
     position:relative;background:var(--panel-2);padding:22px 26px 20px;
@@ -353,10 +356,16 @@
         <a class="open" href="https://langchain-project-rcd-devs.streamlit.app/" target="_blank" rel="noopener">View <span class="arr">→</span></a>
       </article>
 
-      <article class="card reveal" data-demo="" data-title="XPLife">
+      <article class="card lg reveal" data-demo="" data-title="XPLife">
         <div class="tag-row"><span class="sheet-no">XPL-01</span><span class="status is-build">In App Review</span></div>
         <h3>XPLife</h3>
         <p>Real-life goals turned into an XP system — a gamified life and habit tracker that makes progress feel like leveling up.</p>
+        <div class="meta">
+          <div class="row"><span class="mk">Front</span><span class="mv">React Native · Expo · React Navigation · Reanimated · TanStack Query · AsyncStorage/SQLite · RevenueCat + IAP</span></div>
+          <div class="row"><span class="mk">Back</span><span class="mv">Node.js · Express · PostgreSQL · Drizzle ORM · Zod · JWT/bcrypt · Helmet · WebSocket · OpenAI · Resend</span></div>
+          <div class="row"><span class="mk">Tools</span><span class="mv">TypeScript · ESLint/Prettier · EAS Build — type-safe monorepo, client to server</span></div>
+          <div class="row"><span class="mk">Role</span><span class="mv">Founder &amp; solo engineer</span></div>
+        </div>
         <a class="open" href="https://testflight.apple.com/join/aNfZ5gWH" target="_blank" rel="noopener">View <span class="arr">→</span></a>
       </article>
 
